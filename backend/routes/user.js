@@ -33,7 +33,8 @@ router.post("/login", (req, res, next) => {
   let fetchedUser;
   User.findOne({ email: req.body.email })
     .then(user => {
-      // console.log(user);
+       // console.log(user);
+       // console.log('router user.js');
       if (!user) {
         return res.status(401).json({
           message: "Auth failed!"
@@ -43,7 +44,7 @@ router.post("/login", (req, res, next) => {
       return bcrypt.compare(req.body.password, fetchedUser.password);
     })
     .then(result => {
-      // console.log(result);
+       console.log(result);
       if (!result) {
         return res.status(401).json({
           message: "Auth failed"
@@ -54,14 +55,15 @@ router.post("/login", (req, res, next) => {
         'secret_this_should_be_longer',
         { expiresIn: "1h"}
       );
-      // console.log(token);
+       // console.log("token = " + token);
+       // console.log("router user.js");
       res.status(200).json({
         token: token,
         expiresIn: 3600
       });
     })
     .catch(err => {
-      // console.log(err);
+     // console.log(err);
       return res.status(401).json({
         message: "Auth failed"
     });

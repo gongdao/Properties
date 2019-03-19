@@ -9,6 +9,7 @@ import { AuthService } from '../auth.service';
 })
 export class LoginComponent implements OnInit {
   isLoading = false;
+  email = '';
 
   constructor(public authService: AuthService) { }
 
@@ -20,6 +21,9 @@ export class LoginComponent implements OnInit {
       return;
     }
     this .isLoading = true;
+    this.email = form.value.email;
+    localStorage.setItem('userName', form.value.email);
     this .authService.login(form.value.email, form.value.password);
+
   }
 }
