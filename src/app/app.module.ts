@@ -16,6 +16,8 @@ import { PostListComponent } from './posts/post-list/post-list.component';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
+import { UserListComponent } from './users/user-list/user-list.component';
+import { UserEditComponent } from './users/user-edit/user-edit.component';
 
 
 @ NgModule({
@@ -26,7 +28,9 @@ import { AuthInterceptor } from './auth/auth-interceptor';
     HeaderComponent,
     PostListComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    UserListComponent,
+    UserEditComponent
   ],
   imports: [
     BrowserModule,

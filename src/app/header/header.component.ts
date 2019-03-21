@@ -12,6 +12,7 @@ export class HeaderComponent implements OnInit, OnDestroy{
   userIsAuthenticated = false;
   private authListenerSubs: Subscription;
   userName = 'use';
+  role = 0;
 
   constructor(private authService: AuthService ) { }
 
@@ -22,6 +23,9 @@ export class HeaderComponent implements OnInit, OnDestroy{
       .getAuthStatusListener()
       .subscribe(isAuthenticated => {
         this.userName = localStorage.getItem('userName');
+        console.log('The user is ' + this.userName);
+        const user = this;
+        console.log('The user is ' + user[0]);
         this .userIsAuthenticated = isAuthenticated;
 
         console.log('this.userName is ' + this.userName);

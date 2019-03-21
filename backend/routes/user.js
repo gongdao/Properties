@@ -44,7 +44,7 @@ router.post("/login", (req, res, next) => {
       return bcrypt.compare(req.body.password, fetchedUser.password);
     })
     .then(result => {
-       console.log(result);
+       console.log('user.log' + result);
       if (!result) {
         return res.status(401).json({
           message: "Auth failed"
@@ -69,5 +69,44 @@ router.post("/login", (req, res, next) => {
     });
   });
 });
+
+router.get("/:id", (req, res, next) =>  {
+  User.findone({id: req.params.id}).then(user => {
+    console.log('router.get id');
+    if(user) {
+      console.log(user);
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({message: 'User not found!'});
+    }
+  });
+});
+
+router.get("", (req, res, next) => {
+  // console.log(req.query);
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+  const userQuery = User.find();
+  let fetchedUsers;
+  if (pageSize && currentPage){
+    userQuery
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize);
+  }
+  userQuery
+    .then(documents => {
+      fetchedUsers = documents;
+      return User.countDocuments();
+    })
+    .then(count => {
+      res.status(200).json({
+        message: "Users fetched successfully!",
+        users: fetchedUsers,
+        maxUsers: count
+      });
+    });
+});
+
+
 
 module.exports = router;

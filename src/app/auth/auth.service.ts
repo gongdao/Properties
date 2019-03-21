@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { User } from '../users/user.model';
 
 import { AuthData } from './auth-data.model';
 
@@ -11,6 +13,9 @@ export class AuthService {
   private token: string;
   private tokenTimer: any;
   private authStatusListener = new Subject<boolean>();
+
+  private users: User[] = [];
+  private usersUpdated = new Subject< {users: User[], userCount: number}>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -28,7 +33,7 @@ export class AuthService {
 
   createUser(email: string, password: string) {
     const authData: AuthData = {email: email, password: password };
-    console.log(authData);
+    // console.log(authData)
     this .http
       .post('http://localhost:3000/api/user/signup', authData)
       .subscribe(response => {
@@ -83,6 +88,42 @@ export class AuthService {
     }
   }
 
+  getUsers(usersPerPage: number, currentPage: number) {
+    // console.log('users.services was run.');
+    const queryParams = `?pagesize=${usersPerPage}&page=${currentPage}`;
+    this .http
+      .get< { message: string; users: any; maxUsers: number }>(
+        'http://localhost:3000/api/user' + queryParams
+      )
+      .pipe(
+        map(userData => {
+          return {
+            users: userData.users.map(user => {
+              return {
+                id: user._id,
+                email: user.email,
+                password: user.password,
+                role: user.role
+              };
+          }),
+          maxUsers: userData.maxUsers
+        };
+      })
+    )
+    .subscribe(transformedUserData => {
+      console.log(transformedUserData);
+      this .users = transformedUserData.users;
+      this .usersUpdated.next({
+         users: [...this .users],
+         userCount: transformedUserData.maxUsers
+      });
+    });
+  }
+
+  getUserUpdateListener() {
+    return this .usersUpdated.asObservable();
+  }
+
   logout() {
     this.token = null;
     this.isAuthenticated = false;
@@ -122,5 +163,22 @@ export class AuthService {
       token: token,
       expirationDate: new Date(expirationDate)
     };
+  }
+
+  getUserById(id: string) {
+    return this .http.get< {_id: string, email: string, password: string, role: number}>(
+      'http://localhost:3000/api/user/' + id
+    );
+  }
+
+  getUserByEmail(email: string) {
+    return this .http.get< {_id: string, email: string, password: string, role: number}>(
+      'http://localhost:3000/api/user/' + email
+    );
+  }
+
+  deleteUser(id: string) {
+    return this .http
+      .delete( 'http://localhost:3000/api/posts/' + id);
   }
 }
