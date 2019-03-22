@@ -48,9 +48,9 @@ export class UserListComponent implements OnInit, OnDestroy {
     this .authService.getUsers(this .usersPerPage, this .currentPage);
   }
 
-  onDelete(postId: string) {
+  onDelete(userId: string) {
     this .isLoading = true;
-    this .authService.deleteUser(postId).subscribe(() => {
+    this .authService.deleteUser(userId).subscribe(() => {
       this .authService.getUsers(this .usersPerPage, this .currentPage);
     });
   }

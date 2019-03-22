@@ -71,7 +71,7 @@ router.post("/login", (req, res, next) => {
 });
 
 router.get("/:id", (req, res, next) =>  {
-  User.findone({id: req.params.id}).then(user => {
+  User.findById({id: req.params.id}).then(user => {
     console.log('router.get id');
     if(user) {
       console.log(user);
@@ -106,7 +106,5 @@ router.get("", (req, res, next) => {
       });
     });
 });
-
-
 
 module.exports = router;

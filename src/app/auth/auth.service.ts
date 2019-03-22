@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { User } from '../users/user.model';
 
 import { AuthData } from './auth-data.model';
+import { stringify } from 'querystring';
 
 @Injectable({ providedIn: 'root'})
 export class AuthService {
@@ -15,7 +16,11 @@ export class AuthService {
   private authStatusListener = new Subject<boolean>();
 
   private users: User[] = [];
+  private allUsers: User[] = [];
+  private AllUsersUpdated = new Subject<User[]>();
   private usersUpdated = new Subject< {users: User[], userCount: number}>();
+
+  private roleUpdated = new Subject<number>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -87,6 +92,61 @@ export class AuthService {
       this.authStatusListener.next(true);
     }
   }
+  getAllUser() {
+    this.http
+      .get<{ message: string; users: any }>('http://localhost:3000/api/user')
+      .pipe(
+        map(userData => {
+          // console.log('userData is ' + userData);
+          return userData.users.map(user => {
+            console.log('userData.user is ' + user.role);
+            return {
+              id: user._id,
+              email: user.email,
+              password: user.password,
+              role: user.role
+            };
+          });
+        })
+      )
+      .subscribe(transformedUsers => {
+        this.allUsers = transformedUsers;
+        // console.log('authService getAllUsers user = ' + this.users[2].email);
+        // console.log('authService getAllUsers user = ' + this.users[1].email);
+        // console.log('authService getAllUsers user = ' + this.users[0].email);
+        this.AllUsersUpdated.next([...this .allUsers]);
+      });
+  }
+  checkeRole() {
+    this.http
+      .get<{ message: string; users: any }>('http://localhost:3000/api/user')
+      .pipe(
+        map(userData => {
+          // console.log('userData is ' + userData);
+          return userData.users.map(user => {
+            console.log('userData.user is ' + user.role);
+            return {
+              id: user._id,
+              email: user.email,
+              password: user.password,
+              role: user.role
+            };
+          });
+        })
+      )
+      .subscribe(tUsers => {
+        const name = localStorage.getItem('userName');
+        let role: number;
+        console.log('tUser ' + tUsers[1].email);
+        for (const user of tUsers) {
+          if(name === user.email) {
+            role = user.role;
+            break;
+          }
+        }
+        this.roleUpdated.next(role);
+      });
+  }
 
   getUsers(usersPerPage: number, currentPage: number) {
     // console.log('users.services was run.');
@@ -120,8 +180,15 @@ export class AuthService {
     });
   }
 
+  getRoleUpdateListener() {
+    console.log('getRoleUpdatedListener');
+    return this .roleUpdated.asObservable();
+  }
   getUserUpdateListener() {
     return this .usersUpdated.asObservable();
+  }
+  getAllUserUpdateListener() {
+    return this .AllUsersUpdated.asObservable();
   }
 
   logout() {
@@ -177,8 +244,9 @@ export class AuthService {
     );
   }
 
-  deleteUser(id: string) {
+  deleteUser(userId: string) {
+    console.log('id = ' + userId);
     return this .http
-      .delete( 'http://localhost:3000/api/posts/' + id);
+      .delete( 'http://localhost:3000/api/user/' + userId);
   }
 }
