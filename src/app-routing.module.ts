@@ -11,7 +11,7 @@ import { UserListComponent } from './app/users/user-list/user-list.component';
 const routes: Routes = [
   { path: '', component: PostListComponent},
   { path: 'create', component: PostCreateComponent },
-  { path: 'edit/:postId', component: PostCreateComponent },
+  { path: 'edit/:postId', component:  PostCreateComponent},
   { path: 'login', component: LoginComponent },
   { path: 'editUser/:userId', component: UserEditComponent},
   { path: 'listUser', component: UserListComponent}

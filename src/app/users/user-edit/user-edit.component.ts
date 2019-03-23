@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../../auth/auth.service';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { User } from '../user.model';
 
 @Component({
   selector: 'app-user-edit',
@@ -10,17 +12,59 @@ import { AuthService } from '../../auth/auth.service';
 export class UserEditComponent implements OnInit {
 
   isLoading = false;
+  user: User;
+  form: FormGroup;
+  private userId: string;
 
-  constructor(public authService: AuthService) { }
+  constructor(
+    public authService: AuthService,
+    public route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
+    console.log('Begin to edit...');
+    this.form = new FormGroup({
+      email: new FormControl(null, {
+        validators: [Validators.required, Validators.email]
+      }),
+      password: new FormControl(null, {
+        validators: [Validators.required]
+      }),
+      role: new FormControl( null, {
+        validators: [Validators.required, Validators.max(99), Validators.min(0)]
+      })
+    });
+    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+      console.log('come here.');
+      console.log('userId is ' + paramMap.has('userId'));
+      if (paramMap.has('userId')) {
+        this.userId = paramMap.get('userId');
+        this.isLoading = true;
+        this.authService.getUser(this.userId).subscribe(userData => {
+          this.user = {
+            id: userData._id,
+            email: userData.email,
+            password: userData.password,
+            role: userData.role
+          };
+          this.form.setValue({
+            'email': this.user.email,
+            'password': this.user.password,
+            'role': userData.role
+          });
+        });
+      } else {
+        console.log('Database reading error.');
+      }
+    });
   }
-  onSignup(form: NgForm) {
+
+  onUpdate(form: NgForm) {
     if (form.invalid) {
       return;
     }
     this .isLoading = true;
-    this .authService.createUser(form.value.email, form.value.password);
+    this .authService.updateUser(this.userId, form.value.email, form.value.password, form.value.role);
   }
 
 }

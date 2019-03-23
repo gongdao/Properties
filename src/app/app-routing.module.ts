@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'listUser', component: UserListComponent },
-  { path: 'editUser', component: UserEditComponent }
+  { path: 'editUser/:userId', component: UserEditComponent }
 ];
 
 @ NgModule({

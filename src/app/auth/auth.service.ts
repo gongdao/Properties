@@ -46,6 +46,21 @@ export class AuthService {
       });
   }
 
+  updateUser(id: string, email: string, password: string, role: number) {
+    let userData: User | FormData;
+    userData = {
+      id: id,
+      email: email,
+      password: password,
+      role: role
+    };
+    this .http
+      .put('http://localhost:3000/api/user/' + id, userData)
+      .subscribe(response => {
+        this .router.navigate(['/listUser']);
+      });
+  }
+
   login(email: string, password: string) {
     const authData: AuthData = { email: email, password: password };
     this .http
@@ -234,7 +249,7 @@ export class AuthService {
     };
   }
 
-  getUserById(id: string) {
+  getUser(id: string) {
     return this .http.get< {_id: string, email: string, password: string, role: number}>(
       'http://localhost:3000/api/user/' + id
     );
