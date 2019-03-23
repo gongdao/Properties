@@ -7,7 +7,7 @@
     <p>{{user.password}}</p>
     <p>{{user.role}}</p>
     <mat-action-row *ngIf="userIsAuthenticated">
-      <a mat-button color="primary" [routerLink]="['/edit', user.id]">Edit</a>
+      <a mat-button color="primary" [routerLink]="['/editUsers', user.id]">Edit</a>
       <button mat-button color="warn" (click)="onDelete(user.id)">Delete</button>
     </mat-action-row>
   </mat-expansion-panel>

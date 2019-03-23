@@ -75,7 +75,7 @@ export class AuthService {
   }
 
   autoAuthUser() {
-    console.log('Prepare to login.');
+    // console.log('Prepare to login.');
     const authInformation = this .getAuthData();
     // console.log('authInformation ' + authInformation);
     if (!authInformation) {
@@ -83,7 +83,7 @@ export class AuthService {
     }
     const now = new Date();
     const expiresIn = authInformation.expirationDate.getTime() - now.getTime();
-     console.log(authInformation, expiresIn);
+     // console.log(authInformation, expiresIn);
     if ( expiresIn > 0) {
       this.token = authInformation.token;
       this.isAuthenticated = true;
@@ -124,7 +124,7 @@ export class AuthService {
         map(userData => {
           // console.log('userData is ' + userData);
           return userData.users.map(user => {
-            console.log('userData.user is ' + user.role);
+            // console.log('userData.user is ' + user.role);
             return {
               id: user._id,
               email: user.email,
@@ -137,10 +137,11 @@ export class AuthService {
       .subscribe(tUsers => {
         const name = localStorage.getItem('userName');
         let role: number;
-        console.log('tUser ' + tUsers[1].email);
+        // console.log('tUser ' + tUsers[1].email);
         for (const user of tUsers) {
-          if(name === user.email) {
+          if (name === user.email) {
             role = user.role;
+            localStorage.setItem('role', user.role);
             break;
           }
         }
@@ -181,7 +182,7 @@ export class AuthService {
   }
 
   getRoleUpdateListener() {
-    console.log('getRoleUpdatedListener');
+    // console.log('getRoleUpdatedListener');
     return this .roleUpdated.asObservable();
   }
   getUserUpdateListener() {
@@ -201,7 +202,7 @@ export class AuthService {
   }
 
   private setAuthTimer(duration: number) {
-    console.log('Setting timer: ' + duration);
+    // console.log('Setting timer: ' + duration);
     this.tokenTimer = setTimeout(() => {
       this.logout();
     }, duration * 1000);
@@ -214,6 +215,7 @@ export class AuthService {
   }
   private clearAuthData() {
     localStorage.removeItem('userName');
+    localStorage.removeItem('role');
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
   }
