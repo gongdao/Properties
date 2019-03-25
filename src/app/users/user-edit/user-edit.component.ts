@@ -13,7 +13,7 @@ export class UserEditComponent implements OnInit {
 
   isLoading = false;
   user: User;
-  form: FormGroup;
+  userEditForm: FormGroup;
   private userId: string;
 
   constructor(
@@ -23,7 +23,7 @@ export class UserEditComponent implements OnInit {
 
   ngOnInit() {
     console.log('Begin to edit...');
-    this.form = new FormGroup({
+    this.userEditForm = new FormGroup({
       email: new FormControl(null, {
         validators: [Validators.required, Validators.email]
       }),
@@ -36,24 +36,25 @@ export class UserEditComponent implements OnInit {
     });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       console.log('come here.');
-      console.log('userId is ' + paramMap.has('userId'));
+      // console.log('userId is ' + paramMap.has('userId'));
       if (paramMap.has('userId')) {
-        this.userId = paramMap.get('userId');
-        this.isLoading = true;
-        this.authService.getUser(this.userId).subscribe(userData => {
-          this.user = {
-            id: userData._id,
-            email: userData.email,
-            password: userData.password,
-            role: userData.role
-          };
-          this.form.setValue({
-            'email': this.user.email,
-            'password': this.user.password,
+        this .userId = paramMap.get('userId');
+        this .isLoading = true;
+        console.log('userId is first ' + paramMap.get('userId'));
+        this.authService.getUserById(this .userId);
+        this .authService.getUserThroughIdUpdated().subscribe(userData => {
+          console.log('userData email really is ' + userData.email);
+          this .isLoading = false;
+          this.user = userData;
+          this.userEditForm.setValue({
+            'email': userData.email,
+            'password': userData.password,
             'role': userData.role
           });
         });
       } else {
+        this. user = null;
+        this.userId = null;
         console.log('Database reading error.');
       }
     });

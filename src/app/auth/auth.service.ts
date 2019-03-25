@@ -17,6 +17,8 @@ export class AuthService {
 
   private users: User[] = [];
   private allUsers: User[] = [];
+  private userThroughId: User;
+  private userThroughIdUpdated = new Subject<User>();
   private AllUsersUpdated = new Subject<User[]>();
   private usersUpdated = new Subject< {users: User[], userCount: number}>();
 
@@ -206,6 +208,9 @@ export class AuthService {
   getAllUserUpdateListener() {
     return this .AllUsersUpdated.asObservable();
   }
+  getUserThroughIdUpdated(){
+    return this .userThroughIdUpdated.asObservable();
+  }
 
   logout() {
     this.token = null;
@@ -250,15 +255,46 @@ export class AuthService {
   }
 
   getUser(id: string) {
-    return this .http.get< {_id: string, email: string, password: string, role: number}>(
+    console.log('Auth.services.ts.getUser(id).');
+    return this .http.get<{_id: string, email: string, password: string, role: number; }>(
       'http://localhost:3000/api/user/' + id
     );
   }
 
-  getUserByEmail(email: string) {
-    return this .http.get< {_id: string, email: string, password: string, role: number}>(
-      'http://localhost:3000/api/user/' + email
-    );
+
+
+  getUserById(userId: string) {
+    this.http
+      .get<{ message: string; users: any }>('http://localhost:3000/api/user')
+      .pipe(
+        map(userData => {
+          // console.log('userData is ' + userData);
+          return userData.users.map(user => {
+            console.log('userData.user is ' + user.role);
+            return {
+              id: user._id,
+              email: user.email,
+              password: user.password,
+              role: user.role
+            };
+          });
+        })
+      )
+      .subscribe(transformedUsers => {
+        // console.log('authService getAllUsers user = ' + this.users[2].email);
+        // console.log('authService getAllUsers user = ' + this.users[1].email);
+        // console.log('authService getAllUsers user = ' + this.users[0].email);
+        let tuser: any;
+        transformedUsers.forEach(element => {
+          console.log('email is ' + element.email);
+            if ( element.id === userId) {
+              this.userThroughId = element;
+              tuser = element;
+              console.log('got it');
+            }
+        });
+        this.userThroughIdUpdated.next(tuser);
+      });
   }
 
   deleteUser(userId: string) {

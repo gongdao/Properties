@@ -1,21 +1,32 @@
 <mat-card>
   <mat-spinner *ngIf="isLoading"></mat-spinner>
-  <form (submit)="onUpdate(editUserForm)" #editUserForm="ngForm" *ngIf="!isLoading">
+  <form [formGroup]="userEditForm" (submit)="onUpdate(editUserForm)" #editUserForm="ngForm" *ngIf="!isLoading">
     <mat-form-field>
       <input
-      matInput name="email" ngModel
+      matInput
+      formControlName="email"
+      readonly=true
       type="email"
-      placeholder="E-Mail" #emailInput="ngModel" required email >
-      <mat-error *ngIf="emailInput.invalid">Please enter a valid email.</mat-error>
+      placeholder="E-Mail" >
+      <mat-error *ngIf="userEditForm.get('email').invalid">Please enter a valid email.</mat-error>
     </mat-form-field>
 
     <mat-form-field>
-      <input type="password" name="password" ngModel matInput matInput placeholder="Password" #passwordInput="ngModel" required>
-      <mat-error *ngIf="passwordInput.invalid">Please enter a valida password.</mat-error>
+      <input
+      matInput
+      formControlName="password"
+      type="password"
+      readonly=true
+      placeholder="Password" >
+      <mat-error *ngIf="userEditForm.get('password').invalid">Please enter a valida password.</mat-error>
     </mat-form-field>
     <mat-form-field>
-      <input type="number" name="role" ngModel matInput matInput placeholder="Role" #roleInput="ngModel" required>
-      <mat-error *ngIf="roleInput.invalid">Please enter a valida role.</mat-error>
+      <input
+      matInput
+      type="number"
+      formControlName="role"
+      placeholder="Role">
+      <mat-error *ngIf="userEditForm.get('role').invalid">Please enter a valida role.</mat-error>
     </mat-form-field>
     <button mat-raised-button color="primary" type="submit" *ngIf="!isLoading">Update</button>
   </form>
