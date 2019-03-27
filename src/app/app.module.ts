@@ -18,6 +18,8 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { UserListComponent } from './users/user-list/user-list.component';
 import { UserEditComponent } from './users/user-edit/user-edit.component';
+import { UnitCreateComponent } from './Units/unit-create/unit-create.component';
+import { UnitListComponent } from './Units/unit-list/unit-list.component';
 
 
 @ NgModule({
@@ -30,7 +32,9 @@ import { UserEditComponent } from './users/user-edit/user-edit.component';
     LoginComponent,
     SignupComponent,
     UserListComponent,
-    UserEditComponent
+    UserEditComponent,
+    UnitCreateComponent,
+    UnitListComponent
   ],
   imports: [
     BrowserModule,

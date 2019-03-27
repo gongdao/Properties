@@ -1,0 +1,76 @@
+<mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form [formGroup]="unitForm" (submit)="onSaveUnit()" *ngIf="!isLoading">
+    <mat-form-field>
+      <input
+      matInput
+      type="text"
+      formControlName="unitName"
+      placeholder="Unit name">
+      <mat-error *ngIf="unitForm.get('unitName').invalid">Please enter a unit name.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+      matInput
+      type="text"
+      formControlName="orientation"
+      placeholder="Orientation">
+      <mat-error *ngIf="unitForm.get('orientation').invalid">Please enter the orientation.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+      matInput
+      type="number"
+      formControlName="floor"
+      placeholder="Floor">
+      <mat-error *ngIf="unitForm.get('floor').invalid">Please enter a floor number.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+      matInput
+      type="number"
+      formControlName="bedroom"
+      placeholder="Amount of bedroom">
+      <mat-error *ngIf="unitForm.get('bedroom').invalid">Please enter the amount of bedrooms.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+      matInput
+      type="number"
+      formControlName="washroom"
+      placeholder="Amount of wash room">
+      <mat-error *ngIf="unitForm.get('washroom').invalid">Please enter the amount of washrooms.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+      matInput
+      type="number"
+      formControlName="area"
+      placeholder="Area(Square meter)">
+      <mat-error *ngIf="unitForm.get('area').invalid">Please enter the are of the unit.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+      matInput
+      type="number"
+      formControlName="rent"
+      placeholder="Rent(Can $)">
+      <mat-error *ngIf="unitForm.get('rent').invalid">Please enter the area of the unit.</mat-error>
+    </mat-form-field>
+    <div>
+      <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Image</button>
+      <input type="file" #filePicker (change)="onImagePicked($event)">
+    </div>
+    <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview">
+      <img [src]="imagePreview" [alt]="unitForm.value.unitName">
+    </div>
+    <mat-form-field>
+      <input
+      matInput
+      type="text"
+      formControlName="hostId"
+      placeholder="HostId">
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Save Unit</button>
+  </form>
+</mat-card>

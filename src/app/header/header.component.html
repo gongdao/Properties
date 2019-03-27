@@ -10,6 +10,9 @@
     <li *ngIf="role > 20">
       <a mat-button routerLink="/listUser" routerLinkActive="mat-accent">Users</a>
     </li>
+    <li *ngIf="role > 20">
+      <a mat-button routerLink="/createUnit" routerLinkActive="mat-accent">Units</a>
+    </li>
     <li *ngIf="!userIsAuthenticated">
         <a mat-button routerLink="/login" routerLinkActive="mat-accent">Login </a>
      </li>

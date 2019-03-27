@@ -67,6 +67,7 @@ export class PostsService {
         postData
       )
       .subscribe((responseData) => {
+        console.log('addPost successfully.');
         this .router.navigate(['/']);
       });
   }
