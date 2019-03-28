@@ -34,7 +34,9 @@ export class UnitListComponent implements OnInit {
           this .isLoading = false;
           this .totalUnits = unitData.unitCount;
           this .units = unitData.units;
-          console.log('imagePath[1] is ' + unitData.units[1].imagePath.toString());
+          console.log('rent[0] is ' + this.units[0].rent);
+          console.log('imagePath[0] is ' + this.units[0].imagePath);
+          // console.log('imagePath[1] is ' + unitData.units[1].imagePath);
       });
       this .userIsAuthenticated = this .authService.getIsAuth();
       this .authStatusSub = this.authService

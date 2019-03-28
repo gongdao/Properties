@@ -73,8 +73,8 @@ router.put(
       content: req.body.content,
       imagePath: imagePath
   });
-  console.log(post);
-  Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post).then(result => { //第二个参数creator用于验证创建者身份
+    console.log(post);
+    Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post).then(result => { //第二个参数creator用于验证创建者身份
     console.log(result);
     res.status(200).json({message: 'Update successfully!'});
   });
@@ -107,7 +107,9 @@ router.get("", (req, res, next) => {
 
 router.get("/:id", (req, res, next) =>  {
   Post.findById(req.params.id).then(post => {
+    console.log('got post by id was executed.');
     if(post) {
+      console.log('got post by id.');
       res.status(200).json(post);
     } else {
       res.status(404).json({message: 'Post not found!'});

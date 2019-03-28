@@ -37,8 +37,8 @@ router.post(
   multer({storage: storage}).single('image'),
   (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
-    console.log(url);
-    console.log(req.body);
+    // console.log(url);
+    // console.log(req.body);
     const unit = new Unit({
       unitName: req.body.unitName,
       orientation: req.body.orientation,
@@ -74,14 +74,20 @@ router.put(
       const url = req.protocol + '://' + req.get('host');
       imagePath = url + '/images/unit/' + req.file.filename;
     }
-    const post = new Unit({
+    const unit = new Unit({
       _id: req.body.id,
-      title: req.body.title,
-      content: req.body.content,
+      unitName: req.body.unitName,
+      orientation: req.body.orientation,
+      floor: req.body.floor,
+      bedroom: req.body.bedroom,
+      washroom: req.body.washroom,
+      area: req.body.area,
+      rent: req.body.rent,
+      hostId: req.body.hostId,
       imagePath: imagePath
   });
-  console.log(post);
-  Unit.updateOne({ _id: req.params.id, creator: req.userData.userId }, post).then(result => { // 第二个参数creator用于验证创建者身份
+  // console.log(unit);
+    Unit.updateOne({ _id: req.params.id }, unit).then(result => { // 第二个参数creator用于验证创建者身份, 这里不需要了。
     console.log(result);
     res.status(200).json({message: 'Update successfully!'});
   });
@@ -100,7 +106,10 @@ router.get('', (req, res, next) => {
   }
   unitQuery
     .then(documents => {
+      console.log('imagePath[1] is ' + documents.length);
+      // console.log('imagePath[1] is ' + documents.units[1].imagePath);
       fetchedUnits = documents;
+      console.log('fetched data： '+ fetchedUnits );
       return Unit.countDocuments();
     })
     .then(count => {
@@ -126,7 +135,7 @@ router.delete('/:id', checkAuth, (req, res, next) => {
   console.log(checkAuth);
   Unit.deleteOne({_id: req.params.id}).then(result => {
     console.log(result);
-    res.status(200).json({ message: 'Post deleted!'});
+    res.status(200).json({ message: 'unit deleted!'});
   });
 });
 

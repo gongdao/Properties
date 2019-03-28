@@ -22,6 +22,8 @@ export class UnitsService {
       )
       .pipe(
         map(unitData => {
+          console.log('unitData is ' + unitData);
+          console.log('imagePath[1] is ' + unitData.units[1].imagePath);
           return {
             units: unitData.units.map(unit => {
               return {
@@ -33,7 +35,7 @@ export class UnitsService {
                 washroom: unit.washroom,
                 area: unit.area,
                 rent: unit.rent,
-                imagePath: unit.imagepath,
+                imagePath: unit.imagePath,
                 hostId: unit.hostId
               };
           }),
@@ -120,8 +122,10 @@ export class UnitsService {
       image: File | string,
       hostId: string
     ) {
+      console.log('id is ' + id);
     let unitData: Unit | FormData;
     if (typeof(image) === 'object') {
+      console.log('this is from image');
       unitData = new FormData();
       unitData.append('id', id);
       unitData.append('unitName', unitName);
@@ -132,8 +136,9 @@ export class UnitsService {
       unitData.append('area', area.toString());
       unitData.append('rent', rent.toString());
       unitData.append('image', image, unitName);
-      // unitData.append('hostId', hostId);
+      unitData.append('hostId', hostId);
     } else {
+      console.log('this is from no image');
       unitData = {
         id: id,
         unitName: unitName,
@@ -150,7 +155,7 @@ export class UnitsService {
     this .http
       .put('http://localhost:3000/api/units/' + id, unitData)
       .subscribe(response => {
-        this .router.navigate(['/']);
+        this .router.navigate(['/listUnit']);
       });
   }
 
