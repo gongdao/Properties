@@ -33,7 +33,7 @@ export class UnitsService {
                 washroom: unit.washroom,
                 area: unit.area,
                 rent: unit.rent,
-                imagePath: unit.image,
+                imagePath: unit.imagepath,
                 hostId: unit.hostId
               };
           }),
@@ -96,7 +96,7 @@ export class UnitsService {
       console.log('addUnit ws executed ' + unitData.get('area'));
       console.log('addUnit was executed ' + unitData.get('floor'));
       console.log('addUnit was executed id ' + unitData.get('id'));
-      console.log('addUnit was executed -id ' + unitData.get('_id'));
+      console.log('addUnit was executed id ' + unitData.get('image'));
     this .http
       .post< { message: string, unit: Unit}>(
         'http://localhost:3000/api/units',
@@ -104,7 +104,7 @@ export class UnitsService {
       )
       .subscribe((responseData) => {
         console.log('correct.');
-        this .router.navigate(['/']);
+        this .router.navigate(['/listUnit']);
       });
   }
 
@@ -132,7 +132,7 @@ export class UnitsService {
       unitData.append('area', area.toString());
       unitData.append('rent', rent.toString());
       unitData.append('image', image, unitName);
-      unitData.append('hostId', hostId);
+      // unitData.append('hostId', hostId);
     } else {
       unitData = {
         id: id,

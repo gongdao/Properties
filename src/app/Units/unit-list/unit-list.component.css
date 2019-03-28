@@ -1,0 +1,26 @@
+:host {
+  display: block;
+  margin-top: 1rem;
+}
+
+mat-spinner {
+  margin: auto;
+}
+
+mat-paginator{
+  margin-top: 1rem;
+}
+
+.info-text {
+  margin-left: 20px;
+  font-size: 20px;
+}
+
+.unit-image {
+  width: 400px;
+}
+
+.post-image img{
+  width: 100%;
+  box-shadow: 2px 2px 15px rgba(0,0,0,1);
+}

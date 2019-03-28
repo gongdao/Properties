@@ -86,7 +86,7 @@ export class AuthService {
           this.saveAuthData(email, token, expirationDate);
           setTimeout(function () { }, 12000);
           this.isAuthenticated = true;
-          this.router.navigate(['/']);
+          this.router.navigate(['listUnit']);
         }
       });
   }

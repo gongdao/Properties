@@ -12,9 +12,6 @@ import { mimeType } from '../../posts/post-create/mime-type.validator';
   styleUrls: ['./unit-create.component.css']
 })
 export class UnitCreateComponent implements OnInit {
-
-  enteredUnitName = '';
-  enteredOrientation = '';
   unit: Unit;
   isLoading = false;
   unitForm: FormGroup;
@@ -45,11 +42,13 @@ export class UnitCreateComponent implements OnInit {
       hostId: new FormControl(null, { })
     });
     this .route.paramMap.subscribe((paramMap: ParamMap) => {
-      if (paramMap.has('postId')) {
+      if (paramMap.has('unitId')) {
+        console.log('Begin to edit..');
         this .mode = 'edit';
         this .unitId = paramMap.get('unitId');
         this .isLoading = true;
         this .unitsService.getUnit(this .unitId).subscribe(unitData => {
+          console.log('imagePath is ' + unitData.imagePath);
           this .isLoading = false;
           this .unit = {
             id: unitData._id,
@@ -61,8 +60,9 @@ export class UnitCreateComponent implements OnInit {
             area: unitData.area,
             rent: unitData.rent,
             imagePath: unitData.imagePath,
-            hostId: unitData.hostId
+            hostId: ''  // can't be null
           };
+          console.log('imagepath is ' + unitData.imagePath);
           this .unitForm.setValue({
             'unitName': this .unit.unitName,
             'orientation': this .unit.orientation,
@@ -90,6 +90,7 @@ export class UnitCreateComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       this .imagePreview = reader.result.toString(); // toString() is added by me
+      // console.log('imagePreview is ' + this.imagePreview);
     };
     reader.readAsDataURL(file);
   }
@@ -127,6 +128,7 @@ export class UnitCreateComponent implements OnInit {
         this .unitForm.value.image,
         this.unitForm.value.hostId
       );
+      console.log('image = ' + this .unitForm.value.image);
     }
     this .unitForm.reset();
   }

@@ -47,7 +47,7 @@ router.post(
       washroom: req.body.washroom,
       area: req.body.area,
       rent: req.body.rent,
-      imagePath: url + '/images/' + req.file.filename,
+      imagePath: url + '/images/unit/' + req.file.filename,
       hostId: req.body.hostId,
     });
     console.log('req.unit');
@@ -72,7 +72,7 @@ router.put(
     let imagePath = req.body.imagePath;
     if (req.file) {
       const url = req.protocol + '://' + req.get('host');
-      imagePath = url + '/images/' + req.file.filename;
+      imagePath = url + '/images/unit/' + req.file.filename;
     }
     const post = new Unit({
       _id: req.body.id,
@@ -113,9 +113,9 @@ router.get('', (req, res, next) => {
 });
 
 router.get('/:id', (req, res, next) =>  {
-  Unit.findById(req.params.id).then(post => {
-    if(post) {
-      res.status(200).json(post);
+  Unit.findById(req.params.id).then(unit => {
+    if(unit) {
+      res.status(200).json(unit);
     } else {
       res.status(404).json({message: 'Post not found!'});
     }
