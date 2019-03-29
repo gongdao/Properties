@@ -9,4 +9,5 @@ export interface Unit {
   rent: number;
   imagePath: string;
   hostId: string;
+  status: number;
 }

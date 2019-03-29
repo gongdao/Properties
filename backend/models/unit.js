@@ -9,7 +9,8 @@ const postSchema = mongoose.Schema({
   area: { type: Number, reqtuired: true },
   rent: { type: Number, reqtuired: true },
   imagePath: { type: String, required: true },
-  hostId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+  hostId: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+  status: { type: Number, default: 0 }
 });
 
 module.exports = mongoose.model('Unit', postSchema);
