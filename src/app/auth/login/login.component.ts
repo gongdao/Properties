@@ -25,6 +25,6 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('userName', form.value.email);
     this .authService.login(form.value.email, form.value.password);
     this.authService.checkeRole();
-
+    this.authService.navigate();
   }
 }

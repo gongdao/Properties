@@ -43,12 +43,12 @@ export class UnitCreateComponent implements OnInit {
     });
     this .route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('unitId')) {
-        console.log('Begin to edit..');
+        // console.log('Begin to edit..');
         this .mode = 'edit';
         this .unitId = paramMap.get('unitId');
         this .isLoading = true;
         this .unitsService.getUnit(this .unitId).subscribe(unitData => {
-          console.log('imagePath is ' + unitData.imagePath);
+          // console.log('imagePath is ' + unitData.imagePath);
           this .isLoading = false;
           this .unit = {
             id: unitData._id,
@@ -62,7 +62,7 @@ export class UnitCreateComponent implements OnInit {
             imagePath: unitData.imagePath,
             hostId: ''  // can't be null
           };
-          console.log('imagepath is ' + unitData.imagePath);
+          // console.log('imagepath is ' + unitData.imagePath);
           this .unitForm.setValue({
             'unitName': this .unit.unitName,
             'orientation': this .unit.orientation,
@@ -128,7 +128,7 @@ export class UnitCreateComponent implements OnInit {
         this .unitForm.value.image,
         this.unitForm.value.hostId
       );
-      console.log('image = ' + this .unitForm.value.image);
+      // console.log('image = ' + this .unitForm.value.image);
     }
     this .unitForm.reset();
   }

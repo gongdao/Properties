@@ -20,6 +20,7 @@ import { UserListComponent } from './users/user-list/user-list.component';
 import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { UnitCreateComponent } from './Units/unit-create/unit-create.component';
 import { UnitListComponent } from './Units/unit-list/unit-list.component';
+import { BrowseUnitsComponent } from './browseUnits/browse-units/browse-units.component';
 
 
 @ NgModule({
@@ -34,7 +35,8 @@ import { UnitListComponent } from './Units/unit-list/unit-list.component';
     UserListComponent,
     UserEditComponent,
     UnitCreateComponent,
-    UnitListComponent
+    UnitListComponent,
+    BrowseUnitsComponent
   ],
   imports: [
     BrowserModule,

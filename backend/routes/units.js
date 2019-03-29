@@ -97,7 +97,7 @@ router.get('', (req, res, next) => {
   // console.log(req.query);
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
-  const unitQuery = Unit.find();
+  let unitQuery = Unit.find();
   let fetchedUnits;
   if (pageSize && currentPage) {
     unitQuery

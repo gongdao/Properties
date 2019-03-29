@@ -16,9 +16,9 @@ export class UnitListComponent implements OnInit {
    units: Unit[] = [];
    isLoading = false;
    totalUnits = 0;
-   unitsPerPage = 2;
+   unitsPerPage = 5;
    currentPage = 1;
-   pageSizeOptions = [1, 2, 5, 10];
+   pageSizeOptions = [5, 10, 15, 20];
    userIsAuthenticated = false;
    private unitsSub: Subscription;
    private authStatusSub: Subscription;
@@ -34,8 +34,8 @@ export class UnitListComponent implements OnInit {
           this .isLoading = false;
           this .totalUnits = unitData.unitCount;
           this .units = unitData.units;
-          console.log('rent[0] is ' + this.units[0].rent);
-          console.log('imagePath[0] is ' + this.units[0].imagePath);
+          // console.log('rent[0] is ' + this.units[0].rent);
+          // console.log('imagePath[0] is ' + this.units[0].imagePath);
           // console.log('imagePath[1] is ' + unitData.units[1].imagePath);
       });
       this .userIsAuthenticated = this .authService.getIsAuth();

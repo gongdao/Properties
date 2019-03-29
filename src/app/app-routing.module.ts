@@ -9,6 +9,7 @@ import { UserListComponent } from './users/user-list/user-list.component';
 import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { UnitCreateComponent } from './Units/unit-create/unit-create.component';
 import { UnitListComponent } from './Units/unit-list/unit-list.component';
+import { BrowseUnitsComponent } from './browseUnits/browse-units/browse-units.component';
 
 const routes: Routes = [
   { path: '', component: PostListComponent },
@@ -22,7 +23,9 @@ const routes: Routes = [
 
   { path: 'createUnit', component: UnitCreateComponent, canActivate: [AuthGuard] },
   { path: 'editUnit/:unitId', component: UnitCreateComponent, canActivate: [AuthGuard] },
-  { path: 'listUnit', component: UnitListComponent }
+  { path: 'listUnit', component: UnitListComponent },
+
+  { path: 'browseUnit', component: BrowseUnitsComponent }
 ];
 
 @ NgModule({

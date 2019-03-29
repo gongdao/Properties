@@ -15,7 +15,8 @@ export class UnitsService {
 
   getUnits(unitsPerPage: number, currentPage: number) {
     // console.log('posts.services was run.');
-    const queryParams = `?pagesize=${unitsPerPage}&page=${currentPage}`;
+    const role = parseInt(localStorage.getItem('role'), 10);
+    const queryParams = `?pagesize=${unitsPerPage}&page=${currentPage}&role=${role}`;
     this .http
       .get< { message: string; units: any; maxUnits: number }>(
         'http://localhost:3000/api/units' + queryParams
@@ -23,7 +24,7 @@ export class UnitsService {
       .pipe(
         map(unitData => {
           console.log('unitData is ' + unitData);
-          console.log('imagePath[1] is ' + unitData.units[1].imagePath);
+          console.log('imagePath[0] is ' + unitData.units[0].imagePath);
           return {
             units: unitData.units.map(unit => {
               return {
@@ -84,7 +85,7 @@ export class UnitsService {
       image: File,
       hostId: string
     ) {
-      console.log('addUnit eas executed');
+      // console.log('addUnit eas executed');
     const unitData = new FormData();
       unitData.append('unitName', unitName);
       unitData.append('orientation', orientation);
@@ -94,11 +95,11 @@ export class UnitsService {
       unitData.append('area', area.toString());
       unitData.append('rent', rent.toString());
       unitData.append('image', image, unitName);
-      console.log('addUnit was executed ' + unitData.toString() );
-      console.log('addUnit ws executed ' + unitData.get('area'));
-      console.log('addUnit was executed ' + unitData.get('floor'));
-      console.log('addUnit was executed id ' + unitData.get('id'));
-      console.log('addUnit was executed id ' + unitData.get('image'));
+      // console.log('addUnit was executed ' + unitData.toString() );
+      // console.log('addUnit ws executed ' + unitData.get('area'));
+      // console.log('addUnit was executed ' + unitData.get('floor'));
+      // console.log('addUnit was executed id ' + unitData.get('id'));
+      // console.log('addUnit was executed id ' + unitData.get('image'));
     this .http
       .post< { message: string, unit: Unit}>(
         'http://localhost:3000/api/units',

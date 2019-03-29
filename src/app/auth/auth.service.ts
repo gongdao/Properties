@@ -135,6 +135,7 @@ export class AuthService {
       });
   }
   checkeRole() {
+    let role = 0;
     this.http
       .get<{ message: string; users: any }>('http://localhost:3000/api/user')
       .pipe(
@@ -153,7 +154,7 @@ export class AuthService {
       )
       .subscribe(tUsers => {
         const name = localStorage.getItem('userName');
-        let role: number;
+
         // console.log('tUser ' + tUsers[1].email);
         for (const user of tUsers) {
           if (name === user.email) {
@@ -164,6 +165,16 @@ export class AuthService {
         }
         this.roleUpdated.next(role);
       });
+  }
+  navigate(){
+    const role = parseInt(localStorage.getItem('role'), 10);
+    if ( role > 10 && role <= 20 ) {
+      this .router.navigate(['/browseUnit']);
+    } else if ( role > 20 && role <= 30 ) {
+      this .router.navigate(['/listUnit']);
+    } else if ( role > 20 && role <= 30 ) {
+      this .router.navigate(['/listUnit']);
+    }
   }
 
   getUsers(usersPerPage: number, currentPage: number) {
@@ -260,8 +271,6 @@ export class AuthService {
       'http://localhost:3000/api/user/' + id
     );
   }
-
-
 
   getUserById(userId: string) {
     this.http
