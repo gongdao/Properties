@@ -1,5 +1,5 @@
 <mat-action-row *ngIf="userIsAuthenticated">
-  <a mat-button color="primary" [routerLink]="['/createUnit']">Create a Unit</a>
+  <a mat-button color="primary" *ngIf="role === 21" [routerLink]="['/createUnit']">Create a Unit</a>
 </mat-action-row>
 <mat-spinner *ngIf="isLoading"></mat-spinner>
 <mat-accordion multi="true" *ngIf="units.length > 0 && !isLoading">
@@ -18,8 +18,8 @@
     <p>Rent per month:     {{unit.rent}}</p>
     <p>Host Id:            {{unit.hostId}}</p>
     <mat-action-row *ngIf="userIsAuthenticated">
-      <a mat-button color="primary" [routerLink]="['/editUnit', unit.id]">Edit</a>
-      <button mat-button color="warn" (click)="onDelete(unit.id)">Delete</button>
+      <a mat-button color="primary" *ngIf="role > 20 && role < 31" [routerLink]="['/editUnit', unit.id]">Edit</a>
+      <button mat-button color="warn" *ngIf="role > 20 && role < 31" (click)="onDelete(unit.id)">Delete</button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>

@@ -12,11 +12,12 @@ import { AuthService } from '../../auth/auth.service';
 })
 export class UserListComponent implements OnInit, OnDestroy {
    users: User[] = [];
+   role: number;
    isLoading = false;
    totalUsers = 0;
-   usersPerPage = 2;
+   usersPerPage = 10;
    currentPage = 1;
-   pageSizeOptions = [1, 2, 5, 10];
+   pageSizeOptions = [5, 10, 15, 20];
    userIsAuthenticated = false;
    private usersSub: Subscription;
    private authStatusSub: Subscription;
@@ -25,6 +26,11 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this .isLoading = true;
+    const username = localStorage.getItem('userName'); // to get role
+    if (username === null) {
+      console.log('username is null');
+    }
+    this.role = this.authService.getUserRole();
     this .authService.getUsers(this .usersPerPage, this .currentPage);
     this .usersSub = this .authService
       .getUserUpdateListener()
@@ -32,6 +38,12 @@ export class UserListComponent implements OnInit, OnDestroy {
           this .isLoading = false;
           this .totalUsers = userData.userCount;
           this .users = userData.users;
+          this.users.forEach(element => {
+            if(element.email === username) {
+              // this.role = element.role; // get role
+              // console.log('User role is ' + this.role);
+            }
+          });
       });
       this .userIsAuthenticated = this .authService.getIsAuth();
       this .authStatusSub = this.authService

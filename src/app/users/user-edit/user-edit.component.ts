@@ -66,6 +66,8 @@ export class UserEditComponent implements OnInit {
     }
     this .isLoading = true;
     this .authService.updateUser(this.userId, form.value.email, form.value.password, form.value.role);
+    this .isLoading = false;
+    this.authService.navigate(31);
   }
 
 }

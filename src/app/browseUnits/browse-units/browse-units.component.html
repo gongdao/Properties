@@ -1,25 +1,25 @@
-<mat-action-row *ngIf="userIsAuthenticated">
-  <a mat-button color="primary" [routerLink]="['/createUnit']">Create a Unit</a>
-</mat-action-row>
 <mat-spinner *ngIf="isLoading"></mat-spinner>
 <mat-accordion multi="true" *ngIf="units.length > 0 && !isLoading">
-  <mat-expansion-panel *ngFor="let unit of units">
+  <mat-expansion-panel *ngFor="let un of units">
     <mat-expansion-panel-header>
-      Unit Name: {{ unit.unitName }}
+      Unit Name: {{ un.unitName }}
     </mat-expansion-panel-header>
     <div class="unit-image">
-      <img [src]="unit.imagePath" [alt]="unit.unitName">
+      <img [src]="un.imagePath" [alt]="un.unitName">
     </div>
-    <p>Orientation:        {{unit.orientation}}</p>
-    <p>Floor:              {{unit.floor}}</p>
-    <p>Amount of bedrooms: {{unit.bedroom}}</p>
-    <p>Amount of washroom: {{unit.washroom}}</p>
-    <p>Area:               {{unit.area}}</p>
-    <p>Rent per month:     {{unit.rent}}</p>
-    <p>Host Id:            {{unit.hostId}}</p>
+    <p>Orientation:        {{un.orientation}}</p>
+    <p>Floor:              {{un.floor}}</p>
+    <p>Amount of bedrooms: {{un.bedroom}}</p>
+    <p>Amount of washroom: {{un.washroom}}</p>
+    <p>Area:               {{un.area}}</p>
+    <p>Rent per month:     {{un.rent}}</p>
+    <p>Host Id:            {{un.hostId}}</p>
     <mat-action-row *ngIf="userIsAuthenticated">
-      <a mat-button color="primary" [routerLink]="['/editUnit', unit.id]">Edit</a>
-      <button mat-button color="warn" (click)="onDelete(unit.id)">Delete</button>
+      <button mat-button color="warn" (click)="onBook(un.id)" *ngIf="role === 11">Book</button>
+      <button mat-button color="warn" (click)="onCancel(un.id)" *ngIf="role === 15">Cancel</button>
+      <button mat-button color="warn" (click)="onGrant(un.id)" *ngIf="role === 21 && un.status === 20">Grant</button>
+      <button mat-button color="warn" (click)="onDecline(un.id)" *ngIf="role === 21 && un.status === 20">Decline</button>
+      <button mat-button color="warn" (click)="onClearTenant(un.id)" *ngIf="role === 31 && (un.status > 0 || un.hostId !== null)">ClearTenant</button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>

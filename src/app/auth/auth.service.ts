@@ -13,16 +13,23 @@ export class AuthService {
   private isAuthenticated = false;
   private token: string;
   private tokenTimer: any;
+  private userId: string;
+  private email: string;
+  private password: string;
+  private userRole: number;
   private authStatusListener = new Subject<boolean>();
 
   private users: User[] = [];
   private allUsers: User[] = [];
+  private userThroughName: User;
+  private userThroughEmail: User;
   private userThroughId: User;
   private userThroughIdUpdated = new Subject<User>();
+  private userThroughEmailUpdated = new Subject<User>();
   private AllUsersUpdated = new Subject<User[]>();
   private usersUpdated = new Subject< {users: User[], userCount: number}>();
 
-  private roleUpdated = new Subject<number>();
+  private roleUpdated = new Subject<User>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -32,6 +39,20 @@ export class AuthService {
 
   getIsAuth() {
     return this.isAuthenticated;
+  }
+
+  getUserId() {
+    return this.userId;
+  }
+
+  getUserRole() {
+    return this.userRole;
+  }
+  getUserEmail() {
+    return this.email;
+  }
+  getUserPassword() {
+    return this.password;
   }
 
   getAuthStatusListener() {
@@ -59,14 +80,14 @@ export class AuthService {
     this .http
       .put('http://localhost:3000/api/user/' + id, userData)
       .subscribe(response => {
-        this .router.navigate(['/listUser']);
+        // this .router.navigate(['/listUser']);
       });
   }
 
   login(email: string, password: string) {
     const authData: AuthData = { email: email, password: password };
     this .http
-      .post< { token: string; expiresIn: number }>(
+      .post< { token: string; expiresIn: number, userId: string, userRole: number, password: string, email: string }>(
         'http://localhost:3000/api/user/login',
         authData
       )
@@ -78,6 +99,12 @@ export class AuthService {
           const expiresInDuration = response.expiresIn;
           this.setAuthTimer(expiresInDuration);
 
+          this.userId = response.userId;
+          this.password = response.password;
+          this.email = email;
+          this.password = password;
+          this.userRole = response.userRole;
+
           this.authStatusListener.next(true);
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
@@ -86,7 +113,10 @@ export class AuthService {
           this.saveAuthData(email, token, expirationDate);
           setTimeout(function () { }, 12000);
           this.isAuthenticated = true;
-          this.router.navigate(['listUnit']);
+          setTimeout(() => {
+          this.navigate(this.userRole);
+          }, 1000);
+           // this.router.navigate(['browseUnit']);
         }
       });
   }
@@ -159,21 +189,32 @@ export class AuthService {
         for (const user of tUsers) {
           if (name === user.email) {
             role = user.role;
+            localStorage.removeItem('userId');
+            localStorage.setItem('userId', user.id);
             localStorage.setItem('role', user.role);
+            // console.log('get instant userId is ' + localStorage.getItem('userId'));
+            // console.log('userRole is ' + user.role);
+            this.userThroughName = user;
             break;
           }
         }
-        this.roleUpdated.next(role);
+        this.roleUpdated.next(this.userThroughName);
       });
   }
-  navigate(){
-    const role = parseInt(localStorage.getItem('role'), 10);
-    if ( role > 10 && role <= 20 ) {
+  navigate(role: number) {
+    if ( role > 10 && role <= 15 ) {
+      // console.log('go browseUnit for navigate role is ' + role);
       this .router.navigate(['/browseUnit']);
-    } else if ( role > 20 && role <= 30 ) {
-      this .router.navigate(['/listUnit']);
-    } else if ( role > 20 && role <= 30 ) {
-      this .router.navigate(['/listUnit']);
+    } else if ( role === 5 ) {
+      this .router.navigate(['/login']);
+    } else if ( role === 15 ) {
+      this .router.navigate(['/browseUnit']);
+    }   else if ( role > 20 && role <= 30 ) {
+      this .router.navigate(['/browseUnit']);
+    } else if ( role > 30 && role <= 40 ) {
+      this .router.navigate(['/listUser']);
+    } else{
+      this .router.navigate(['/']);
     }
   }
 
@@ -219,8 +260,11 @@ export class AuthService {
   getAllUserUpdateListener() {
     return this .AllUsersUpdated.asObservable();
   }
-  getUserThroughIdUpdated(){
+  getUserThroughIdUpdated() {
     return this .userThroughIdUpdated.asObservable();
+  }
+  getUserThroughEmailUpdatedListener() {
+    return this .userThroughEmailUpdated.asObservable();
   }
 
   logout() {
@@ -245,6 +289,7 @@ export class AuthService {
     localStorage.setItem('expiration', expirationDate.toISOString());
   }
   private clearAuthData() {
+    localStorage.removeItem('userId');
     localStorage.removeItem('userName');
     localStorage.removeItem('role');
     localStorage.removeItem('token');
@@ -266,7 +311,7 @@ export class AuthService {
   }
 
   getUser(id: string) {
-    console.log('Auth.services.ts.getUser(id).');
+    // console.log('Auth.services.ts.getUser(id).');
     return this .http.get<{_id: string, email: string, password: string, role: number; }>(
       'http://localhost:3000/api/user/' + id
     );
@@ -279,7 +324,7 @@ export class AuthService {
         map(userData => {
           // console.log('userData is ' + userData);
           return userData.users.map(user => {
-            console.log('userData.user is ' + user.role);
+            // console.log('userData.user is ' + user.role);
             return {
               id: user._id,
               email: user.email,
@@ -290,21 +335,50 @@ export class AuthService {
         })
       )
       .subscribe(transformedUsers => {
-        // console.log('authService getAllUsers user = ' + this.users[2].email);
-        // console.log('authService getAllUsers user = ' + this.users[1].email);
-        // console.log('authService getAllUsers user = ' + this.users[0].email);
         let tuser: any;
         transformedUsers.forEach(element => {
-          console.log('email is ' + element.email);
+          // console.log('email is ' + element.email);
             if ( element.id === userId) {
               this.userThroughId = element;
               tuser = element;
-              console.log('got it');
+              // console.log('got it');
             }
         });
         this.userThroughIdUpdated.next(tuser);
       });
   }
+
+  getUserByEmail(email: string) {
+    this.http
+      .get<{ message: string; users: any }>('http://localhost:3000/api/user')
+      .pipe(
+        map(userData => {
+          // console.log('userData is ' + userData);
+          return userData.users.map(user => {
+            // console.log('userData.user is ' + user.role);
+            return {
+              id: user._id,
+              email: user.email,
+              password: user.password,
+              role: user.role
+            };
+          });
+        })
+      )
+      .subscribe(transformedUsers => {
+        let tuser: any;
+        transformedUsers.forEach(element => {
+          // console.log('email is ' + element.email);
+            if ( element.email === email) {
+              this.userThroughEmail = element;
+              tuser = element;
+              // console.log('got it');
+            }
+        });
+        this.userThroughEmailUpdated.next(tuser);
+      });
+  }
+
 
   deleteUser(userId: string) {
     console.log('id = ' + userId);

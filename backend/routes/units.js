@@ -84,7 +84,8 @@ router.put(
       area: req.body.area,
       rent: req.body.rent,
       hostId: req.body.hostId,
-      imagePath: imagePath
+      imagePath: imagePath,
+      status: req.body.status
   });
   // console.log(unit);
     Unit.updateOne({ _id: req.params.id }, unit).then(result => { // 第二个参数creator用于验证创建者身份, 这里不需要了。
@@ -97,8 +98,27 @@ router.get('', (req, res, next) => {
   // console.log(req.query);
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
-  let unitQuery = Unit.find();
+  const currentRole = +req.query.currentRole;
+  const userId = req.query.currentUserId;
   let fetchedUnits;
+  let unitQuery;
+
+  console.log('currentUserId is ' +userId);
+  console.log('currentRole is ' + currentRole);
+  console.log('currentPage is ' + currentPage);
+  if(currentRole === 15){ // requesting user
+    unitQuery = Unit.find({$and: [{'hostId': userId}]});
+  } else if((currentRole > 10 && currentRole < 15) || currentRole === NaN ){ // normal users
+    unitQuery = Unit.find({'hostId': null});
+  } else if(currentRole > 20 && currentRole < 30){ // staffs
+    unitQuery = Unit.find().sort({'status': -1});
+  }else if(currentRole > 30 && currentRole < 40){ // admins
+    unitQuery = Unit.find();
+  } else {
+    console.log('Invalid visit.');
+    unitQuery = Unit.find();
+  }
+
   if (pageSize && currentPage) {
     unitQuery
       .skip(pageSize * (currentPage - 1))
@@ -106,10 +126,10 @@ router.get('', (req, res, next) => {
   }
   unitQuery
     .then(documents => {
-      console.log('imagePath[1] is ' + documents.length);
+      console.log('document amount is ' + documents.length);
       // console.log('imagePath[1] is ' + documents.units[1].imagePath);
       fetchedUnits = documents;
-      console.log('fetched data： '+ fetchedUnits );
+      // console.log('fetched data： '+ fetchedUnits );
       return Unit.countDocuments();
     })
     .then(count => {

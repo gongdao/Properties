@@ -30,9 +30,9 @@ export class PostListComponent implements OnInit, OnDestroy {
    posts: Post[] = [];
    isLoading = false;
    totalPosts = 0;
-   postsPerPage = 2;
+   postsPerPage = 5;
    currentPage = 1;
-   pageSizeOptions = [1, 2, 5, 10];
+   pageSizeOptions = [5, 10, 15, 20];
    userIsAuthenticated = false;
    private postsSub: Subscription;
    private authStatusSub: Subscription;
@@ -48,7 +48,7 @@ export class PostListComponent implements OnInit, OnDestroy {
           this .isLoading = false;
           this .totalPosts = postData.postCount;
           this .posts = postData.posts;
-          console.log('imagePath is ' + this.posts[1].imagePath);
+          // console.log('imagePath is ' + this.posts[1].imagePath);
       });
       this .userIsAuthenticated = this .authService.getIsAuth();
       this .authStatusSub = this.authService

@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 import { Unit } from './unit.model';
+import { User } from 'src/app/users/user.model';
 
 @ Injectable({providedIn: 'root'})
 export class UnitsService {
@@ -13,18 +14,26 @@ export class UnitsService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getUnits(unitsPerPage: number, currentPage: number) {
+  getUnits(unitsPerPage: number, currentPage: number, currentUserId: string, currentUserRole: number) {
     // console.log('posts.services was run.');
-    const role = parseInt(localStorage.getItem('role'), 10);
-    const queryParams = `?pagesize=${unitsPerPage}&page=${currentPage}&role=${role}`;
+    const userId: string = currentUserId;
+    const role: number = currentUserRole;
+    console.log('eath user id is ' + userId);
+    let queryParams;
+    if (role !== NaN && userId !== null) {
+      queryParams = `?pagesize=${unitsPerPage}&page=${currentPage}&currentRole=${role}&currentUserId=${userId}`;
+    }  else {
+      queryParams = `?pagesize=${unitsPerPage}&page=${currentPage}`;
+    }
+    console.log('queryParams is ' + queryParams);
     this .http
       .get< { message: string; units: any; maxUnits: number }>(
         'http://localhost:3000/api/units' + queryParams
       )
       .pipe(
         map(unitData => {
-          console.log('unitData is ' + unitData);
-          console.log('imagePath[0] is ' + unitData.units[0].imagePath);
+          // console.log('unitData is ' + unitData);
+          // console.log('imagePath[0] is ' + unitData.units[0].imagePath);
           return {
             units: unitData.units.map(unit => {
               return {
@@ -37,19 +46,20 @@ export class UnitsService {
                 area: unit.area,
                 rent: unit.rent,
                 imagePath: unit.imagePath,
-                hostId: unit.hostId
+                hostId: unit.hostId,
+                status: unit.status
               };
           }),
           maxUnits: unitData.maxUnits
         };
       })
     )
-    .subscribe(transformedPostData => {
-      console.log(transformedPostData);
-      this .units = transformedPostData.units;
+    .subscribe(transformedUnitData => {
+      console.log(transformedUnitData);
+      this .units = transformedUnitData.units;
       this .unitsUpdated.next({
          units: [...this .units],
-         unitCount: transformedPostData.maxUnits
+         unitCount: transformedUnitData.maxUnits
       });
     });
   }
@@ -69,7 +79,9 @@ export class UnitsService {
       area: number,
       rent: number,
       imagePath: string,
-      hostId: string}>(
+      hostId: string,
+      status: number
+    }>(
       'http://localhost:3000/api/units/' + id
     );
   }
@@ -107,7 +119,7 @@ export class UnitsService {
       )
       .subscribe((responseData) => {
         console.log('correct.');
-        this .router.navigate(['/listUnit']);
+        // this .router.navigate(['/listUnit']);
       });
   }
 
@@ -121,12 +133,13 @@ export class UnitsService {
       area: number,
       rent: number,
       image: File | string,
-      hostId: string
+      hostId: string,
+      status: number
     ) {
       console.log('id is ' + id);
     let unitData: Unit | FormData;
     if (typeof(image) === 'object') {
-      console.log('this is from image');
+      // console.log('this is from image');
       unitData = new FormData();
       unitData.append('id', id);
       unitData.append('unitName', unitName);
@@ -138,8 +151,9 @@ export class UnitsService {
       unitData.append('rent', rent.toString());
       unitData.append('image', image, unitName);
       unitData.append('hostId', hostId);
+      unitData.append('status', status.toString());
     } else {
-      console.log('this is from no image');
+      // console.log('this is from no image');
       unitData = {
         id: id,
         unitName: unitName,
@@ -150,13 +164,14 @@ export class UnitsService {
         area: area,
         rent: rent,
         imagePath: image,
-        hostId: hostId
+        hostId: hostId,
+        status: status
       };
     }
     this .http
       .put('http://localhost:3000/api/units/' + id, unitData)
       .subscribe(response => {
-        this .router.navigate(['/listUnit']);
+        // this .router.navigate(['/listUnit']);
       });
   }
 

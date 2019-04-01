@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const postSchema = mongoose.Schema({
+const unitSchema = mongoose.Schema({
   unitName: { type: String, reqtuired: true },
   orientation: { type: String, required: true },
   floor: { type: Number, reqtuired: true },
@@ -13,4 +13,4 @@ const postSchema = mongoose.Schema({
   status: { type: Number, default: 0 }
 });
 
-module.exports = mongoose.model('Unit', postSchema);
+module.exports = mongoose.model('Unit', unitSchema);

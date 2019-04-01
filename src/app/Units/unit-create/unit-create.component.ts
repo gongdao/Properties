@@ -39,7 +39,8 @@ export class UnitCreateComponent implements OnInit {
         validators: [Validators.required],
         asyncValidators: [mimeType]
       }),
-      hostId: new FormControl(null, { })
+      hostId: new FormControl(null, { }),
+      status: new FormControl(null, { })
     });
     this .route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('unitId')) {
@@ -60,7 +61,8 @@ export class UnitCreateComponent implements OnInit {
             area: unitData.area,
             rent: unitData.rent,
             imagePath: unitData.imagePath,
-            hostId: ''  // can't be null
+            hostId: '',  // can't be null
+            status: unitData.status
           };
           // console.log('imagepath is ' + unitData.imagePath);
           this .unitForm.setValue({
@@ -73,6 +75,7 @@ export class UnitCreateComponent implements OnInit {
             'rent': this .unit.rent,
             image: this .unit.imagePath,
             'hostId': this .unit.hostId,
+            'status': this.unit.status
           });
         });
       } else {
@@ -126,7 +129,8 @@ export class UnitCreateComponent implements OnInit {
         this. unitForm.value.area.toString(),
         this.unitForm.value.rent.toString(),
         this .unitForm.value.image,
-        this.unitForm.value.hostId
+        this.unitForm.value.hostId,
+        this.unit.status
       );
       // console.log('image = ' + this .unitForm.value.image);
     }

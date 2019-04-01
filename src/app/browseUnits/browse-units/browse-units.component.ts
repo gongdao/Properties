@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { Unit } from '../../Units/unit.model';
 import { UnitsService } from '../../Units/units.service';
 import { AuthService } from '../../auth/auth.service';
+import { User } from 'src/app/users/user.model';
 
 @Component({
   selector: 'app-browse-units',
@@ -15,6 +16,12 @@ export class BrowseUnitsComponent implements OnInit {
 
   units: Unit[] = [];
   isLoading = false;
+  role = 0;
+  ui: string;
+  user: User;
+  unitHost: User;
+  unit: Unit;
+  userId: string;
   totalUnits = 0;
   unitsPerPage = 5;
   currentPage = 1;
@@ -22,18 +29,25 @@ export class BrowseUnitsComponent implements OnInit {
   userIsAuthenticated = false;
   private unitsSub: Subscription;
   private authStatusSub: Subscription;
+  private roleUpdateListenerSubs: Subscription;
 
  constructor(public unitsService: UnitsService, private authService: AuthService) {}
 
  ngOnInit() {
+   // console.log('user role is ' + ur);
    this .isLoading = true;
-   this .unitsService.getUnits(this .unitsPerPage, this .currentPage);
+   this.userId = this.authService.getUserId();
+   this.role = this.authService.getUserRole();
+   console.log('userId is ' + this.userId);
+   console.log('user role is ' + this.role);
+   this .unitsService.getUnits(this .unitsPerPage, this .currentPage, this.userId, this.role);
    this .unitsSub = this .unitsService
      .getUnitUpdateListener()
      .subscribe((unitData: {units: Unit[], unitCount: number}) => {
          this .isLoading = false;
          this .totalUnits = unitData.unitCount;
          this .units = unitData.units;
+         console.log('status[0] is ' + this.units[0].status);
          // console.log('rent[0] is ' + this.units[0].rent);
          // console.log('imagePath[0] is ' + this.units[0].imagePath);
          // console.log('imagePath[1] is ' + unitData.units[1].imagePath);
@@ -43,6 +57,8 @@ export class BrowseUnitsComponent implements OnInit {
        .getAuthStatusListener()
        .subscribe(isAuthenticated => {
          this .userIsAuthenticated = isAuthenticated;
+         this.userId = this.authService.getUserId();
+         this.role = this.authService.getUserRole();
      });
  }
 
@@ -51,22 +67,228 @@ export class BrowseUnitsComponent implements OnInit {
    this .isLoading = true;
    this .currentPage = pageData.pageIndex + 1;
    this .unitsPerPage = pageData.pageSize;
-   this .unitsService.getUnits(this .unitsPerPage, this .currentPage);
+   console.log('changed.');
+   this .unitsService.getUnits(this .unitsPerPage, this .currentPage, this.userId, this.role);
  }
 
- onDelete(unitId: string) {
-   this .isLoading = true;
-   this .unitsService.deletePost(unitId).subscribe(() => {
-     this.totalUnits --;
-     console.log('current page is ' + this.currentPage);
-     if(this.totalUnits % this.unitsPerPage === 0 && this.currentPage === 1 + this.totalUnits / this.unitsPerPage){
-       this.currentPage --;
-     }
-     console.log('current page is ' + this.currentPage);
-     console.log('total page is ' + this.totalUnits);
-     console.log('posts per page is ' + this.unitsPerPage);
-     this .unitsService.getUnits(this .unitsPerPage, this .currentPage);
-   });
+ onBook(unitId: string) {
+    this .isLoading = true;
+    this .unitsService.getUnit(unitId).subscribe(unitData => {
+       console.log('imagePath is ' + unitData.imagePath);
+       console.log('unitName is ' + unitData.unitName);
+      this .isLoading = false;
+      this.unit = {
+        id: unitData._id,
+        unitName: unitData.unitName,
+        orientation: unitData.orientation,
+        floor: unitData.floor,
+        bedroom: unitData.bedroom,
+        washroom: unitData.washroom,
+        area: unitData.area,
+        rent: unitData.rent,
+        imagePath: unitData.imagePath,
+        hostId: this.userId,  // can't be null
+        status: 20
+      };
+      this.unitsService.updateUnit(unitId, // can't write outside this subscribe
+        this.unit.unitName,
+        this.unit.orientation,
+        this.unit.floor,
+        this.unit.bedroom,
+        this.unit.washroom,
+        this.unit.area,
+        this.unit.rent,
+        this.unit.imagePath,
+        this.unit.hostId,
+        20
+      );
+    });
+    this .isLoading = true;
+    this.authService.getUser(this.unit.hostId).subscribe(host => {
+    console.log('host email is ' + host.email);
+    this .isLoading = false;
+    this.unitHost = {
+      id: host._id,
+      email: host.email,
+      password: host.password,
+      role: 11
+    };
+  });
+  this .authService.updateUser(this.unit.hostId, this.unitHost.email, this.unitHost.password, 15);
+  this.role = 15;
+  // this .authService.navigate(15);
+ }
+
+ onCancel(unitId: string){
+  this .isLoading = true;
+    this .unitsService.getUnit(unitId).subscribe(unitData => {
+       console.log('imagePath is ' + unitData.imagePath);
+       console.log('unitName is ' + unitData.unitName);
+      this .isLoading = false;
+      this.unit = {
+        id: unitData._id,
+        unitName: unitData.unitName,
+        orientation: unitData.orientation,
+        floor: unitData.floor,
+        bedroom: unitData.bedroom,
+        washroom: unitData.washroom,
+        area: unitData.area,
+        rent: unitData.rent,
+        imagePath: unitData.imagePath,
+        hostId: null,  // can't be null
+        status: 0
+      };
+      this.unitsService.updateUnit(unitId, // can't write outside this subscribe
+        this.unit.unitName,
+        this.unit.orientation,
+        this.unit.floor,
+        this.unit.bedroom,
+        this.unit.washroom,
+        this.unit.area,
+        this.unit.rent,
+        this.unit.imagePath,
+        null,
+        0
+      );
+    });
+
+    this .authService.updateUser(this.ui, this.user.email, this.user.password, 11);
+    this.role = 11;
+    // this .authService.navigate(11);
+ }
+
+ onGrant(unitId: string) {
+  this .isLoading = true;
+  let hostId: string; // local variable
+  this .unitsService.getUnit(unitId).subscribe(unitData => {
+     console.log('imagePath is ' + unitData.imagePath);
+     console.log('unitName is ' + unitData.unitName);
+    this .isLoading = false;
+    hostId = unitData.hostId;
+    this.unit = {
+      id: unitData._id,
+      unitName: unitData.unitName,
+      orientation: unitData.orientation,
+      floor: unitData.floor,
+      bedroom: unitData.bedroom,
+      washroom: unitData.washroom,
+      area: unitData.area,
+      rent: unitData.rent,
+      imagePath: unitData.imagePath,
+      hostId: unitData.hostId,  // can't be null
+      status: 10
+    };
+    this.unitsService.updateUnit(unitId, // can't write outside this subscribe
+      this.unit.unitName,
+      this.unit.orientation,
+      this.unit.floor,
+      this.unit.bedroom,
+      this.unit.washroom,
+      this.unit.area,
+      this.unit.rent,
+      this.unit.imagePath,
+      this.unit.hostId,
+      10
+    );
+  });
+  this .isLoading = true;
+  this.authService.getUser(hostId).subscribe(host => {
+    console.log('host email is ' + host.email);
+    this .isLoading = false;
+    this.unitHost = {
+      id: host._id,
+      email: host.email,
+      password: host.password,
+      role: 11
+    };
+  });
+  this .authService.updateUser(hostId, this.unitHost.email, this.unitHost.password, 11);
+
+ }
+
+ onDecline(unitId: string) {
+  this .isLoading = true;
+  let hostId: string; // local variable
+  this .unitsService.getUnit(unitId).subscribe(unitData => {
+     console.log('imagePath is ' + unitData.imagePath);
+     console.log('unitName is ' + unitData.unitName);
+    this .isLoading = false;
+    hostId = unitData.hostId;
+    this.unit = {
+      id: unitData._id,
+      unitName: unitData.unitName,
+      orientation: unitData.orientation,
+      floor: unitData.floor,
+      bedroom: unitData.bedroom,
+      washroom: unitData.washroom,
+      area: unitData.area,
+      rent: unitData.rent,
+      imagePath: unitData.imagePath,
+      hostId: unitData.hostId,  // can't be null
+      status: 0
+    };
+    this.unitsService.updateUnit(unitId, // can't write outside this subscribe
+      this.unit.unitName,
+      this.unit.orientation,
+      this.unit.floor,
+      this.unit.bedroom,
+      this.unit.washroom,
+      this.unit.area,
+      this.unit.rent,
+      this.unit.imagePath,
+      null,
+      0
+    );
+  });
+
+  this .isLoading = true;
+  this.authService.getUser(hostId).subscribe(host => {
+    console.log('host email is ' + host.email);
+    this .isLoading = false;
+    this.unitHost = {
+      id: host._id,
+      email: host.email,
+      password: host.password,
+      role: 11
+    };
+  });
+  this .authService.updateUser(hostId, this.unitHost.email, this.unitHost.password, 11);
+ }
+
+ onClearTenant(unitId: string) {
+  this .isLoading = true;
+  let hostId: string; // local variable
+  this .unitsService.getUnit(unitId).subscribe(unitData => {
+     console.log('imagePath is ' + unitData.imagePath);
+     console.log('unitName is ' + unitData.unitName);
+    this .isLoading = false;
+    hostId = unitData.hostId;
+    this.unit = {
+      id: unitData._id,
+      unitName: unitData.unitName,
+      orientation: unitData.orientation,
+      floor: unitData.floor,
+      bedroom: unitData.bedroom,
+      washroom: unitData.washroom,
+      area: unitData.area,
+      rent: unitData.rent,
+      imagePath: unitData.imagePath,
+      hostId: unitData.hostId,  // can't be null
+      status: 0
+    };
+    this.unitsService.updateUnit(unitId, // can't write outside this subscribe
+      this.unit.unitName,
+      this.unit.orientation,
+      this.unit.floor,
+      this.unit.bedroom,
+      this.unit.washroom,
+      this.unit.area,
+      this.unit.rent,
+      this.unit.imagePath,
+      null,
+      0
+    );
+  });
  }
 
  ngOnDestroy() {

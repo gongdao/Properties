@@ -1,17 +1,20 @@
 <mat-toolbar color="primary">
-  <span>
+    <span class="spacerL">
+        <a routerLink="/browseUnit">Units</a>
+    </span>
+  <span class="spacerL">
     <a routerLink="/">MyMessages</a>
   </span>
   <span class="spacer"></span>
   <ul>
-    <li *ngIf="userIsAuthenticated">
+    <li *ngIf="role > 20 && role < 31 && userIsAuthenticated">
       <a mat-button routerLink="/create" routerLinkActive="mat-accent">New Post</a>
     </li>
-    <li *ngIf="role > 20">
-      <a mat-button routerLink="/listUser" routerLinkActive="mat-accent">Users</a>
+    <li *ngIf="role > 20 && role < 41 && userIsAuthenticated">
+      <a mat-button routerLink="/listUser" routerLinkActive="mat-accent">UsersAdmin</a>
     </li>
-    <li *ngIf="role > 20">
-      <a mat-button routerLink="/listUnit" routerLinkActive="mat-accent">Units</a>
+    <li *ngIf="role > 20 && role < 41 && userIsAuthenticated">
+      <a mat-button routerLink="/listUnit" routerLinkActive="mat-accent">UnitsAdmin</a>
     </li>
     <li *ngIf="!userIsAuthenticated">
         <a mat-button routerLink="/login" routerLinkActive="mat-accent">Login </a>

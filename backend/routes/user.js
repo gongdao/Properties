@@ -60,7 +60,11 @@ router.post("/login", (req, res, next) => {
        // console.log("router user.js");
       res.status(200).json({
         token: token,
-        expiresIn: 3600
+        expiresIn: 3600,
+        userId: fetchedUser._id,
+        userRole: fetchedUser.role,
+        password: fetchedUser.password,
+        email: fetchedUser.email
       });
     })
     .catch(err => {
@@ -79,7 +83,7 @@ router.put(
       _id: req.body.id,
       email: req.body.email,
       password: req.body.password,
-      role: req.body.role
+      role: req.body.role,
   });
   console.log(user);
   User.updateOne({ _id: req.params.id}, user).then(result => {
@@ -104,7 +108,7 @@ router.get("", (req, res, next) => {
   // console.log(req.query);
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
-  const userQuery = User.find();
+  const userQuery = User.find({'email': {$ne: 'zhanzhao@c.c'}});
   let fetchedUsers;
   if (pageSize && currentPage){
     userQuery

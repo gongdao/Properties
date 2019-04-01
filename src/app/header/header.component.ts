@@ -18,33 +18,26 @@ export class HeaderComponent implements OnInit, OnDestroy{
   constructor(private authService: AuthService ) { }
 
   ngOnInit() {
-    this.roleUpdateListenerSubs = this.authService
-      .getRoleUpdateListener()
-      .subscribe(role => {
-        this.role = role;
-        console.log('Role is ' + role);
-      });
 
     this .authListenerSubs = this .authService
       .getAuthStatusListener()
       .subscribe(isAuthenticated => {
         this.userName = localStorage.getItem('userName');
         // console.log('The user is ' + this.userName);
+        this.role = this.authService.getUserRole();
         this .userIsAuthenticated = isAuthenticated;
 
         // console.log('this.userName is ' + this.userName);
     });
   }
-
   onLogout() {
     this .userName = '';
     this . role = 0;
     this .authService.logout();
+    this.authService.navigate(0);
   }
   ngOnDestroy() {
     this .authListenerSubs.unsubscribe();
+    this.roleUpdateListenerSubs.unsubscribe();
   }
-
-
-
 }
