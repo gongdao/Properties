@@ -41,6 +41,7 @@ router.post(
       title: req.body.title,
       content: req.body.content,
       imagePath: url + "/images/" + req.file.filename,
+      createDate: Date.now(),
       creator: req.userData.userId
     });
     //console.log(req.userData);
@@ -71,6 +72,7 @@ router.put(
       _id: req.body.id,
       title: req.body.title,
       content: req.body.content,
+      createDate: Date.now(),
       imagePath: imagePath
   });
     console.log(post);
@@ -84,7 +86,7 @@ router.get("", (req, res, next) => {
   // console.log(req.query);
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
-  const postQuery = Post.find();
+  const postQuery = Post.find().sort({'createDate': -1} );
   let fetchedPosts;
   if (pageSize && currentPage){
     postQuery

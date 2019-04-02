@@ -29,6 +29,7 @@ export class PostsService {
                 content: post.content,
                 id: post._id,
                 imagePath: post.imagePath,
+                createDate: post.createDate,
                 creator: post.creator
               };
           }),
@@ -85,7 +86,8 @@ export class PostsService {
         id: id,
         title: title,
         content: content,
-        imagePath: image
+        imagePath: image,
+        createDate: null
       };
     }
     this .http

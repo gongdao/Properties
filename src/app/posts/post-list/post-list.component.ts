@@ -29,6 +29,7 @@ export class PostListComponent implements OnInit, OnDestroy {
     ]; */
    posts: Post[] = [];
    isLoading = false;
+   role: number;
    totalPosts = 0;
    postsPerPage = 5;
    currentPage = 1;
@@ -41,6 +42,7 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this .isLoading = true;
+    this.role = this.authService.getUserRole();
     this .postsService.getPosts(this .postsPerPage, this .currentPage);
     this .postsSub = this .postsService
       .getPostUpdateListener()
@@ -48,7 +50,7 @@ export class PostListComponent implements OnInit, OnDestroy {
           this .isLoading = false;
           this .totalPosts = postData.postCount;
           this .posts = postData.posts;
-          // console.log('imagePath is ' + this.posts[1].imagePath);
+           console.log('createDate is ' + this.posts[0].createDate);
       });
       this .userIsAuthenticated = this .authService.getIsAuth();
       this .authStatusSub = this.authService
