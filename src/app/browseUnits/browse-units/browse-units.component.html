@@ -1,8 +1,15 @@
 <mat-spinner *ngIf="isLoading"></mat-spinner>
 <mat-accordion multi="true" *ngIf="units.length > 0 && !isLoading">
   <mat-expansion-panel *ngFor="let un of units">
-    <mat-expansion-panel-header>
+
+    <mat-expansion-panel-header class="tenant-text" *ngIf="un.status === 10">
       Unit Name: {{ un.unitName }}
+    </mat-expansion-panel-header>
+    <mat-expansion-panel-header class="customer-text" *ngIf="un.status === 20">
+        Unit Name: {{ un.unitName }}
+    </mat-expansion-panel-header>
+    <mat-expansion-panel-header class="info-text" *ngIf="un.status === 0">
+        Unit Name: {{ un.unitName }}
     </mat-expansion-panel-header>
     <div class="unit-image">
       <img [src]="un.imagePath" [alt]="un.unitName">
@@ -14,6 +21,7 @@
     <p>Area:               {{un.area}}</p>
     <p>Rent per month:     {{un.rent}}</p>
     <p>Host Id:            {{un.hostId}}</p>
+    <p>Status:             {{un.status}}</p>
     <mat-action-row *ngIf="userIsAuthenticated">
       <button mat-button color="warn" (click)="onBook(un.id)" *ngIf="role === 11">Book</button>
       <button mat-button color="warn" (click)="onCancel(un.id)" *ngIf="role === 15">Cancel</button>

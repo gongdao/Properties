@@ -5,7 +5,9 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {MatInputModule, MatCardModule, MatButtonModule,
   MatCheckboxModule, MatToolbarModule, MatExpansionModule,
-  MatProgressSpinnerModule, MatPaginatorModule} from '@angular/material';
+  MatProgressSpinnerModule, MatPaginatorModule,
+  MatDialogModule
+} from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,6 +23,8 @@ import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { UnitCreateComponent } from './Units/unit-create/unit-create.component';
 import { UnitListComponent } from './Units/unit-list/unit-list.component';
 import { BrowseUnitsComponent } from './browseUnits/browse-units/browse-units.component';
+import { ErrorInterceptor } from './error.interceptor';
+import { ErrorComponent } from './error/error.component'
 
 
 @ NgModule({
@@ -36,7 +40,8 @@ import { BrowseUnitsComponent } from './browseUnits/browse-units/browse-units.co
     UserEditComponent,
     UnitCreateComponent,
     UnitListComponent,
-    BrowseUnitsComponent
+    BrowseUnitsComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -52,9 +57,14 @@ import { BrowseUnitsComponent } from './browseUnits/browse-units/browse-units.co
     MatExpansionModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDialogModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
-  bootstrap: [AppComponent]
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+  ],
+  bootstrap: [AppComponent],
+  entryComponents: [ErrorComponent]
 })
 export class AppModule { }

@@ -107,16 +107,16 @@ router.get('', (req, res, next) => {
   console.log('currentRole is ' + currentRole);
   console.log('currentPage is ' + currentPage);
   if(currentRole === 15){ // requesting user
-    unitQuery = Unit.find({$and: [{'hostId': userId}]});
+    unitQuery = Unit.find({$and: [{'hostId': userId}]}).sort({'status': -1});
   } else if((currentRole > 10 && currentRole < 15) || currentRole === NaN ){ // normal users
-    unitQuery = Unit.find({'hostId': null});
+    unitQuery = Unit.find({'hostId': null}).sort({'status': -1});
   } else if(currentRole > 20 && currentRole < 30){ // staffs
     unitQuery = Unit.find().sort({'status': -1});
   }else if(currentRole > 30 && currentRole < 40){ // admins
-    unitQuery = Unit.find();
+    unitQuery = Unit.find().sort({'status': -1});
   } else {
     console.log('Invalid visit.');
-    unitQuery = Unit.find();
+    unitQuery = Unit.find({'hostId': null});
   }
 
   if (pageSize && currentPage) {

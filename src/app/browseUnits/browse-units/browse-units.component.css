@@ -15,6 +15,16 @@ mat-paginator{
   margin-left: 20px;
   font-size: 20px;
 }
+.customer-text {
+  color: brown;
+  margin-left: 20px;
+  font-size: 20px;
+}
+.tenant-text {
+  color: blue;
+  margin-left: 20px;
+  font-size: 20px;
+}
 
 .unit-image {
   width: 400px;

@@ -47,7 +47,7 @@ export class BrowseUnitsComponent implements OnInit {
          this .isLoading = false;
          this .totalUnits = unitData.unitCount;
          this .units = unitData.units;
-         console.log('status[0] is ' + this.units[0].status);
+         // console.log('status[0] is ' + this.units[0].status);
          // console.log('rent[0] is ' + this.units[0].rent);
          // console.log('imagePath[0] is ' + this.units[0].imagePath);
          // console.log('imagePath[1] is ' + unitData.units[1].imagePath);
@@ -74,8 +74,8 @@ export class BrowseUnitsComponent implements OnInit {
  onBook(unitId: string) {
     this .isLoading = true;
     this .unitsService.getUnit(unitId).subscribe(unitData => {
-       console.log('imagePath is ' + unitData.imagePath);
-       console.log('unitName is ' + unitData.unitName);
+      // console.log('imagePath is ' + unitData.imagePath);
+      // console.log('unitName is ' + unitData.unitName);
       this .isLoading = false;
       this.unit = {
         id: unitData._id,
@@ -104,19 +104,23 @@ export class BrowseUnitsComponent implements OnInit {
       );
     });
     this .isLoading = true;
-    this.authService.getUser(this.unit.hostId).subscribe(host => {
-    console.log('host email is ' + host.email);
-    this .isLoading = false;
-    this.unitHost = {
-      id: host._id,
-      email: host.email,
-      password: host.password,
-      role: 11
-    };
-  });
-  this .authService.updateUser(this.unit.hostId, this.unitHost.email, this.unitHost.password, 15);
-  this.role = 15;
-  // this .authService.navigate(15);
+    this.authService.getUserById(this .userId);
+    this .authService.getUserThroughIdUpdated().subscribe(userData => {
+       console.log('userData email really is ' + userData.email);
+      this .isLoading = false;
+      this.user = userData;
+
+      console.log('this.unitHost.email is ' + this.user.email);
+      this .authService.updateUser(this.userId, this.user.email, this.user.password, 15);
+      this.role = 15;
+      this .unitsService.getUnits(this .unitsPerPage, this .currentPage, this.userId, this.role);
+      this .authService.navigate(15);
+
+    });
+
+  // console.log('this.unitHost.email is ' + this.unitHost.email);
+  // console.log('this.unitHost.password is ' + this.unitHost.password);
+
  }
 
  onCancel(unitId: string){
@@ -152,9 +156,20 @@ export class BrowseUnitsComponent implements OnInit {
       );
     });
 
-    this .authService.updateUser(this.ui, this.user.email, this.user.password, 11);
-    this.role = 11;
-    // this .authService.navigate(11);
+    this .isLoading = true;
+    this.authService.getUserById(this .userId);
+    this .authService.getUserThroughIdUpdated().subscribe(userData => {
+       console.log('userData email really is ' + userData.email);
+      this .isLoading = false;
+      this.user = userData;
+
+      console.log('this.unitHost.email is ' + this.user.email);
+      this .authService.updateUser(this.userId, this.user.email, this.user.password, 11);
+      this.role = 11;
+      this .unitsService.getUnits(this .unitsPerPage, this .currentPage, this.userId, this.role);
+      this .authService.navigate(11);
+
+    });
  }
 
  onGrant(unitId: string) {
@@ -190,19 +205,22 @@ export class BrowseUnitsComponent implements OnInit {
       this.unit.hostId,
       10
     );
+
+    this .isLoading = true;
+    console.log(' hostId is ' + hostId);
+    this.authService.getUserById(hostId);
+    this .authService.getUserThroughIdUpdated().subscribe(userData => {
+      console.log('userData email really is ' + userData.email);
+      this .isLoading = false;
+      this.user = userData;
+
+      console.log('this.unitHost.email is ' + this.user.email);
+      this .authService.updateUser(hostId, this.user.email, this.user.password, 11);
+      this .unitsService.getUnits(this .unitsPerPage, this .currentPage, this.userId, this.role);
+      this .authService.navigate(11);
+    });
+
   });
-  this .isLoading = true;
-  this.authService.getUser(hostId).subscribe(host => {
-    console.log('host email is ' + host.email);
-    this .isLoading = false;
-    this.unitHost = {
-      id: host._id,
-      email: host.email,
-      password: host.password,
-      role: 11
-    };
-  });
-  this .authService.updateUser(hostId, this.unitHost.email, this.unitHost.password, 11);
 
  }
 
@@ -239,20 +257,21 @@ export class BrowseUnitsComponent implements OnInit {
       null,
       0
     );
-  });
 
-  this .isLoading = true;
-  this.authService.getUser(hostId).subscribe(host => {
-    console.log('host email is ' + host.email);
-    this .isLoading = false;
-    this.unitHost = {
-      id: host._id,
-      email: host.email,
-      password: host.password,
-      role: 11
-    };
+    this .isLoading = true;
+    console.log(' hostId is ' + hostId);
+    this.authService.getUserById(hostId);
+    this .authService.getUserThroughIdUpdated().subscribe(userData => {
+      console.log('userData email really is ' + userData.email);
+      this .isLoading = false;
+      this.user = userData;
+
+      console.log('this.unitHost.email is ' + this.user.email);
+      this .authService.updateUser(hostId, this.user.email, this.user.password, 11);
+      this .unitsService.getUnits(this .unitsPerPage, this .currentPage, this.userId, this.role);
+      this .authService.navigate(11);
+    });
   });
-  this .authService.updateUser(hostId, this.unitHost.email, this.unitHost.password, 11);
  }
 
  onClearTenant(unitId: string) {
@@ -288,6 +307,7 @@ export class BrowseUnitsComponent implements OnInit {
       null,
       0
     );
+    this .unitsService.getUnits(this .unitsPerPage, this .currentPage, this.userId, this.role);
   });
  }
 

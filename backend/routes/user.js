@@ -63,7 +63,7 @@ router.post("/login", (req, res, next) => {
         expiresIn: 3600,
         userId: fetchedUser._id,
         userRole: fetchedUser.role,
-        password: fetchedUser.password,
+        password: bcrypt.hash(fetchedUser.password, 10), // encrypt
         email: fetchedUser.email
       });
     })
