@@ -119,7 +119,7 @@ export class UnitsService {
       )
       .subscribe((responseData) => {
         console.log('correct.');
-        // this .router.navigate(['/listUnit']);
+         this .router.navigate(['/listUnit']);
       });
   }
 
@@ -171,7 +171,7 @@ export class UnitsService {
     this .http
       .put('http://localhost:3000/api/units/' + id, unitData)
       .subscribe(response => {
-        // this .router.navigate(['/listUnit']);
+         this .router.navigate(['/listUnit']);
       });
   }
 

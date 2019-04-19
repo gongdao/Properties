@@ -96,5 +96,6 @@ export class PostCreateComponent implements OnInit {
       );
     }
     this .form.reset();
+    this .isLoading = false;
   }
 }

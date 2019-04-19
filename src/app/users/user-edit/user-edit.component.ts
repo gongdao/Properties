@@ -40,7 +40,7 @@ export class UserEditComponent implements OnInit {
       if (paramMap.has('userId')) {
         this .userId = paramMap.get('userId');
         this .isLoading = true;
-        console.log('userId is first ' + paramMap.get('userId'));
+        console.log('userId is first ' + this .userId);
         this.authService.getUserById(this .userId);
         this .authService.getUserThroughIdUpdated().subscribe(userData => {
           console.log('userData email really is ' + userData.email);

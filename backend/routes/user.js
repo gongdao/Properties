@@ -85,7 +85,7 @@ router.put(
       password: req.body.password,
       role: req.body.role,
   });
-  console.log(user);
+  // console.log(user);
   User.updateOne({ _id: req.params.id}, user).then(result => {
     console.log(result);
     res.status(200).json({message: 'Update successfully!'});
