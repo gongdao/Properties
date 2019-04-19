@@ -47,7 +47,8 @@ export class UnitsService {
                 rent: unit.rent,
                 imagePath: unit.imagePath,
                 hostId: unit.hostId,
-                status: unit.status
+                status: unit.status,
+                createDate: unit.createDate
               };
           }),
           maxUnits: unitData.maxUnits
@@ -80,7 +81,8 @@ export class UnitsService {
       rent: number,
       imagePath: string,
       hostId: string,
-      status: number
+      status: number,
+      createDate: Date
     }>(
       'http://localhost:3000/api/units/' + id
     );
@@ -134,7 +136,8 @@ export class UnitsService {
       rent: number,
       image: File | string,
       hostId: string,
-      status: number
+      status: number,
+      createDate: Date
     ) {
       console.log('id is ' + id);
     let unitData: Unit | FormData;
@@ -152,6 +155,7 @@ export class UnitsService {
       unitData.append('image', image, unitName);
       unitData.append('hostId', hostId);
       unitData.append('status', status.toString());
+      unitData.append('createDate', createDate.toString());
     } else {
       // console.log('this is from no image');
       unitData = {
@@ -165,7 +169,8 @@ export class UnitsService {
         rent: rent,
         imagePath: image,
         hostId: hostId,
-        status: status
+        status: status,
+        createDate: createDate
       };
     }
     this .http

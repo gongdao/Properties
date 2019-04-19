@@ -34,7 +34,7 @@ export class UnitListComponent implements OnInit {
     this .isLoading = true;
     this.userId = this.authService.getUserId();
     this.role = this.authService.getUserRole();
-    this .unitsService.getUnits(this .unitsPerPage, this .currentPage, this.userId, this.role);
+    this .unitsService.getUnits(this .unitsPerPage, this .currentPage, this.userId, 30); // 30 for working staff;
     this .unitsSub = this .unitsService
       .getUnitUpdateListener()
       .subscribe((unitData: {units: Unit[], unitCount: number}) => {

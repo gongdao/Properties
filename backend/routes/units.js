@@ -49,6 +49,7 @@ router.post(
       rent: req.body.rent,
       imagePath: url + '/images/unit/' + req.file.filename,
       hostId: req.body.hostId,
+      createDate: Date.now()
     });
     console.log('req.unit');
      console.log(req.unit);
@@ -85,7 +86,8 @@ router.put(
       rent: req.body.rent,
       hostId: req.body.hostId,
       imagePath: imagePath,
-      status: req.body.status
+      status: req.body.status,
+      createDate: req.body.createDate
   });
   // console.log(unit);
     Unit.updateOne({ _id: req.params.id }, unit).then(result => { // 第二个参数creator用于验证创建者身份, 这里不需要了。
@@ -110,8 +112,10 @@ router.get('', (req, res, next) => {
     unitQuery = Unit.find({$and: [{'hostId': userId}]}).sort({'status': -1});
   } else if((currentRole > 10 && currentRole < 15) || currentRole === NaN ){ // normal users
     unitQuery = Unit.find({'hostId': null}).sort({'status': -1});
-  } else if(currentRole > 20 && currentRole < 30){ // staffs
+  } else if(currentRole > 20 && currentRole < 30){ // staffs view the booking situations
     unitQuery = Unit.find().sort({'status': -1});
+  }else if(currentRole == 30){ // staffs working on units creation and modificatin
+    unitQuery = Unit.find().sort({'createDate': -1});
   }else if(currentRole > 30 && currentRole < 40){ // admins
     unitQuery = Unit.find().sort({'status': -1});
   } else {
@@ -146,7 +150,7 @@ router.get('/:id', (req, res, next) =>  {
     if(unit) {
       res.status(200).json(unit);
     } else {
-      res.status(404).json({message: 'Post not found!'});
+      res.status(404).json({message: 'Unit not found!'});
     }
   });
 });

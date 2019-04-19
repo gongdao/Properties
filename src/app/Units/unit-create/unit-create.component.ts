@@ -62,7 +62,8 @@ export class UnitCreateComponent implements OnInit {
             rent: unitData.rent,
             imagePath: unitData.imagePath,
             hostId: '',  // can't be null
-            status: unitData.status
+            status: unitData.status,
+            createDate: unitData.createDate
           };
           // console.log('imagepath is ' + unitData.imagePath);
           this .unitForm.setValue({
@@ -130,7 +131,8 @@ export class UnitCreateComponent implements OnInit {
         this.unitForm.value.rent.toString(),
         this .unitForm.value.image,
         this.unitForm.value.hostId,
-        this.unit.status
+        this.unit.status,
+        this.unit.createDate
       );
       // console.log('image = ' + this .unitForm.value.image);
     }

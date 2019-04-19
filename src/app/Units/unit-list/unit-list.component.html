@@ -17,6 +17,7 @@
     <p>Area:               {{unit.area}}</p>
     <p>Rent per month:     {{unit.rent}}</p>
     <p>Host Id:            {{unit.hostId}}</p>
+    <p>Create Date:            {{unit.createDate}}</p>
     <mat-action-row *ngIf="userIsAuthenticated">
       <a mat-button color="primary" *ngIf="role > 20 && role < 31" [routerLink]="['/editUnit', unit.id]">Edit</a>
       <button mat-button color="warn" *ngIf="role > 20 && role < 31" (click)="onDelete(unit.id)">Delete</button>

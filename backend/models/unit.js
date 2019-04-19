@@ -10,7 +10,8 @@ const unitSchema = mongoose.Schema({
   rent: { type: Number, reqtuired: true },
   imagePath: { type: String, required: true },
   hostId: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-  status: { type: Number, default: 0 }
+  status: { type: Number, default: 0 },
+  createDate: {type: Date, required: true}
 });
 
 module.exports = mongoose.model('Unit', unitSchema);

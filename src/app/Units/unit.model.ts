@@ -10,4 +10,5 @@ export interface Unit {
   imagePath: string;
   hostId: string;
   status: number;
+  createDate: Date;
 }

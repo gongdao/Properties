@@ -88,7 +88,8 @@ export class BrowseUnitsComponent implements OnInit {
         rent: unitData.rent,
         imagePath: unitData.imagePath,
         hostId: this.userId,  // can't be null
-        status: 20
+        status: 20,
+        createDate: unitData.createDate
       };
       this.unitsService.updateUnit(unitId, // can't write outside this subscribe
         this.unit.unitName,
@@ -100,7 +101,8 @@ export class BrowseUnitsComponent implements OnInit {
         this.unit.rent,
         this.unit.imagePath,
         this.unit.hostId,
-        20
+        20,
+        this.unit.createDate
       );
     });
     this .isLoading = true;
@@ -140,7 +142,8 @@ export class BrowseUnitsComponent implements OnInit {
         rent: unitData.rent,
         imagePath: unitData.imagePath,
         hostId: null,  // can't be null
-        status: 0
+        status: 0,
+        createDate: unitData.createDate
       };
       this.unitsService.updateUnit(unitId, // can't write outside this subscribe
         this.unit.unitName,
@@ -152,7 +155,8 @@ export class BrowseUnitsComponent implements OnInit {
         this.unit.rent,
         this.unit.imagePath,
         null,
-        0
+        0,
+        this.unit.createDate
       );
     });
 
@@ -191,7 +195,8 @@ export class BrowseUnitsComponent implements OnInit {
       rent: unitData.rent,
       imagePath: unitData.imagePath,
       hostId: unitData.hostId,  // can't be null
-      status: 10
+      status: 10,
+      createDate: unitData.createDate
     };
     this.unitsService.updateUnit(unitId, // can't write outside this subscribe
       this.unit.unitName,
@@ -203,7 +208,8 @@ export class BrowseUnitsComponent implements OnInit {
       this.unit.rent,
       this.unit.imagePath,
       this.unit.hostId,
-      10
+      10,
+      this.unit.createDate
     );
 
     this .isLoading = true;
@@ -243,7 +249,8 @@ export class BrowseUnitsComponent implements OnInit {
       rent: unitData.rent,
       imagePath: unitData.imagePath,
       hostId: unitData.hostId,  // can't be null
-      status: 0
+      status: 0,
+      createDate: unitData.createDate
     };
     this.unitsService.updateUnit(unitId, // can't write outside this subscribe
       this.unit.unitName,
@@ -255,7 +262,8 @@ export class BrowseUnitsComponent implements OnInit {
       this.unit.rent,
       this.unit.imagePath,
       null,
-      0
+      0,
+      this.unit.createDate
     );
 
     this .isLoading = true;
@@ -293,7 +301,8 @@ export class BrowseUnitsComponent implements OnInit {
       rent: unitData.rent,
       imagePath: unitData.imagePath,
       hostId: unitData.hostId,  // can't be null
-      status: 0
+      status: 0,
+      createDate: unitData.createDate
     };
     this.unitsService.updateUnit(unitId, // can't write outside this subscribe
       this.unit.unitName,
@@ -305,7 +314,8 @@ export class BrowseUnitsComponent implements OnInit {
       this.unit.rent,
       this.unit.imagePath,
       null,
-      0
+      0,
+      this.unit.createDate
     );
     this .unitsService.getUnits(this .unitsPerPage, this .currentPage, this.userId, this.role);
   });
